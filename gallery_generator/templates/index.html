@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Photo Gallery</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://unpkg.com/viewerjs/dist/viewer.css">
+</head>
+<body data-gallery-name="{{ gallery_name }}">
+    <header class="app-header">
+        <div class="header-left">
+            <button id="menu-toggle" class="menu-button">☰</button>
+            <span class="app-logo">Photo Gallery</span>
+        </div>
+        <div class="header-center">
+            <div id="drop-area" class="drop-area">
+                <p>Drag and drop zip file here, or</p>
+                <input type="file" id="fileElem" accept=".zip" style="display: none;">
+                <label class="button sidebar-button" for="fileElem">Browse Files</label>
+            </div>
+            
+        </div>
+        <div class="header-right">
+            <button id="deletion-mode-toggle" class="sidebar-button">Deletion Mode</button>
+            <button id="confirm-deletion" class="sidebar-button">Confirm Deletion</button>
+            <button id="export-report-btn" class="sidebar-button">Export Report</button>
+        </div>
+    </header>
+
+    <aside id="menu-sidebar">
+        <a href="#" id="close-menu-btn" class="close-btn">&times;</a>
+        <div class="sidebar-section">
+            <h3>Date Filter</h3>
+            <select id="date-filter">
+                <option value="all">All Dates</option>
+            </select>
+        </div>
+
+        <div class="sidebar-section">
+            <h3>Version History</h3>
+            <select id="version-history-select">
+                <option value="current">Current Version</option>
+            </select>
+            <button id="revert-version-btn" class="sidebar-button">Revert to Version</button>
+        </div>
+    </aside>
+
+    <div class="main-wrapper">
+        <aside class="sidebar">
+            <div class="sidebar-section">
+                <h3>Table of Contents</h3>
+                <div id="toc-container"></div>
+            </div>
+        </aside>
+
+        <main class="content">
+            <div id="gallery-container"></div>
+        </main>
+    </div>
+
+    <script src="https://unpkg.com/viewerjs/dist/viewer.js"></script>
+    <script src="{{ url_for('static', filename='js/gallery.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.js"></script>
+    <script src="{{ url_for('static', filename='js/viewer_setup.js') }}"></script>
+</body>
+</html>

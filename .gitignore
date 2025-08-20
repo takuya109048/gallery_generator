@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.pyc
+*.log
+.env
+venv/
+.venv/
+
+# IDEs
+.vscode/
+.idea/
+
+# Testing
+.pytest_cache/
+
+# Project specific generated files
+app.log
+backups/
+gallery_data/
+databricks_api_sample/
+app.yaml

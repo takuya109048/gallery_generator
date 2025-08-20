@@ -1,4 +1,4 @@
-# Photo Gallery Generator
+# Photo Gallery Generator__
 
 This project implements a web-based photo gallery generator that organizes images based on their folder structure and provides various features like image viewing, uploading, deletion, commenting, version control, and report generation. It's built with Flask for the backend and a modern JavaScript frontend.
 

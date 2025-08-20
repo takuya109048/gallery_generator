@@ -695,7 +695,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Initialize Socket.IO
-    const socket = io();
+    const socket = io({ transports: ['polling', 'websocket'] }); // Databricks環境での安定性向上のため、ポーリングを優先
 
     socket.on('connect', () => {
         console.log('Connected to WebSocket');

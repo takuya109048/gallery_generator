@@ -1,4 +1,4 @@
 {
-    "storage_type": "local",
+    "storage_type": "databricks",
     "MAX_CONTENT_LENGTH": 157286400
 }

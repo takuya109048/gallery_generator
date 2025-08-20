@@ -34,7 +34,6 @@ class UploadService:
                     return gallery_data # or None, depending on desired behavior
 
                 processed_files = 0
-                last_reported_progress = -1
 
                 for member in file_members:
                     original_filename = os.path.basename(member.filename)
@@ -62,10 +61,8 @@ class UploadService:
                     processed_files += 1
                     if self.socketio:
                         progress = (processed_files / total_files) * 100
-                        if int(progress) > last_reported_progress:
-                            last_reported_progress = int(progress)
-                            self.socketio.emit('upload_progress', {'progress': progress})
-                            self.socketio.sleep(0.01) # Allow time for the message to be sent
+                        self.socketio.emit('upload_progress', {'progress': progress})
+                        self.socketio.sleep(0.01) # Allow time for the message to be sent
 
         except zipfile.BadZipFile:
             logger.error("Uploaded file is not a valid zip file.")

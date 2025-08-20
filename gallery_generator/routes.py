@@ -39,11 +39,34 @@ def upload_file(gallery_name):
         return jsonify({'error': 'No selected file'}), 400
     
     if file:
-        upload_service = UploadService(current_app.storage, socketio=current_app.socketio)
-        new_gallery_data = upload_service.process_zip_file(file, gallery_name)
+        # Read the file content into memory or save to a temporary file
+        # so it can be passed to the background task
+        file_content = file.read()
+        original_filename = file.filename
+
+        # Start background task for processing
+        current_app.socketio.start_background_task(
+            _process_upload_in_background,
+            current_app._get_current_object(), # Pass the app context
+            file_content,
+            original_filename,
+            gallery_name
+        )
+        return jsonify({'message': 'Upload initiated successfully'}), 202
+    return jsonify({'error': 'Something went wrong'}), 500
+
+def _process_upload_in_background(app, file_content, original_filename, gallery_name):
+    with app.app_context():
+        upload_service = UploadService(app.storage, socketio=app.socketio)
+        # Create a BytesIO object from the file_content to simulate a file stream
+        import io
+        file_stream = io.BytesIO(file_content)
+        file_stream.filename = original_filename # Add filename attribute for consistency
+
+        new_gallery_data = upload_service.process_zip_file(file_stream, gallery_name)
         
         if new_gallery_data:
-            existing_data = current_app.data_manager.read_gallery_data(gallery_name)
+            existing_data = app.data_manager.read_gallery_data(gallery_name)
             
             def merge_data(existing, new):
                 existing_image_paths = {img['full_path'] for img in existing.get('images', [])}
@@ -64,13 +87,19 @@ def upload_file(gallery_name):
                 merge_data(existing_data, new_gallery_data)
                 final_gallery_data = existing_data
 
-            current_app.data_manager._sort_gallery_data(final_gallery_data)
-            current_app.data_manager.write_gallery_data(final_gallery_data, gallery_name)
-            current_app.socketio.emit('gallery_updated', {'message': 'Upload complete and gallery updated!', 'gallery_data': final_gallery_data})
-            return jsonify({'message': 'File uploaded and processed successfully'}), 200
+            app.data_manager._sort_gallery_data(final_gallery_data)
+            app.data_manager.write_gallery_data(final_gallery_data, gallery_name)
+            app.socketio.emit('gallery_updated', {'message': 'Upload complete and gallery updated!', 'gallery_data': final_gallery_data})
         else:
-            return jsonify({'error': 'Failed to process zip file'}), 500
-    return jsonify({'error': 'Something went wrong'}), 500
+            # Handle failure in background task
+            app.socketio.emit('upload_failed', {'message': 'Failed to process zip file', 'gallery_name': gallery_name})
+            logger.error(f"Failed to process zip file for gallery {gallery_name}")
+
+
+@main.route('/gallery/<gallery_name>/upload_status', methods=['GET'])
+def get_upload_status(gallery_name):
+    progress = UploadService.get_upload_progress(gallery_name)
+    return jsonify({'progress': progress}), 200
 
 @main.route('/gallery/<gallery_name>/delete', methods=['POST'])
 def delete_items(gallery_name):

@@ -105,6 +105,48 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    const checkUploadStatusAndDisplayProgressBar = async () => {
+        const galleryName = document.body.dataset.galleryName;
+        if (!galleryName) return;
+
+        try {
+            const response = await fetch(`/gallery/${galleryName}/upload_status`);
+            if (response.ok) {
+                const data = await response.json();
+                const progress = data.progress;
+
+                if (progress === null || typeof progress === 'undefined') {
+                    // No upload in progress or no previous upload status found, do nothing
+                    return;
+                }
+
+                if (progress >= 0 && progress < 100) {
+                    showProgressBarToast(progress);
+                } else if (progress === 100) {
+                    // If upload is complete, ensure progress bar is hidden
+                    if (progressBarToast) {
+                        progressBarToast.classList.remove('show');
+                        progressBarToast.parentNode.removeChild(progressBarToast);
+                        progressBarToast = null;
+                        progressBarInner = null;
+                    }
+                } else if (progress === -1) {
+                    // Handle error state
+                    showMessage('Previous upload failed. Please try again.', 'error');
+                    if (progressBarToast) {
+                        progressBarToast.classList.remove('show');
+                        progressBarToast.parentNode.removeChild(progressBarToast);
+                        progressBarToast = null;
+                        progressBarInner = null;
+                    }
+                }
+            }
+        } catch (error) {
+            console.error('Error checking upload status:', error);
+            // Do not show error message to user, as it might be a transient network issue
+        }
+    };
+
     // Simple hash function for generating unique IDs
     const simpleHash = (str) => {
         let hash = 0;
@@ -713,9 +755,22 @@ document.addEventListener('DOMContentLoaded', () => {
         fetchAndRenderGallery(); // Re-fetch all data and re-render the gallery
     });
 
+    socket.on('upload_failed', (data) => {
+        console.error('Upload failed via WebSocket:', data.message);
+        showMessage(`Upload failed: ${data.message}`, 'error');
+        // Hide progress bar toast on failure
+        if (progressBarToast) {
+            progressBarToast.classList.remove('show');
+            progressBarToast.parentNode.removeChild(progressBarToast);
+            progressBarToast = null;
+            progressBarInner = null;
+        }
+    });
+
     // Initial fetch and render
     fetchAndRenderGallery();
     updateConfirmDeletionButtonState();
+    checkUploadStatusAndDisplayProgressBar();
 
     // Modify fetchAndRenderGallery to not rely on parsing HTML for data
     // Instead, it should fetch data from a dedicated API endpoint

@@ -8,6 +8,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 class UploadService:
+    _upload_progress = {} # Class-level dictionary to store upload progress
     def __init__(self, storage: Storage, socketio=None):
         self.storage = storage
         self.socketio = socketio
@@ -23,6 +24,9 @@ class UploadService:
     def process_zip_file(self, zip_file_stream, gallery_name):
         gallery_data = {"name": "root", "images": [], "comment": "", "children": []}
         
+        # Initialize progress for this gallery
+        UploadService._upload_progress[gallery_name] = 0
+        
         try:
             with zipfile.ZipFile(zip_file_stream, 'r') as zip_ref:
                 # Get total number of processable files for progress calculation
@@ -31,6 +35,7 @@ class UploadService:
                 if total_files == 0:
                     logger.warning("No processable image files found in the zip.")
                     # You might want to return a specific message to the user
+                    UploadService._upload_progress[gallery_name] = 100 # Mark as complete if no files
                     return gallery_data # or None, depending on desired behavior
 
                 processed_files = 0
@@ -61,20 +66,28 @@ class UploadService:
                     processed_files += 1
                     if self.socketio:
                         progress = (processed_files / total_files) * 100
+                        UploadService._upload_progress[gallery_name] = progress # Update stored progress
                         self.socketio.emit('upload_progress', {'progress': progress})
                         self.socketio.sleep(0.01) # Allow time for the message to be sent
 
         except zipfile.BadZipFile:
             logger.error("Uploaded file is not a valid zip file.")
+            UploadService._upload_progress[gallery_name] = -1 # Indicate error
             return None
         except Exception as e:
             logger.error(f"Error processing zip file: {e}")
+            UploadService._upload_progress[gallery_name] = -1 # Indicate error
             return None
         
         if self.socketio:
+            UploadService._upload_progress[gallery_name] = 100 # Ensure final progress is 100
             self.socketio.emit('upload_progress', {'progress': 100})
 
         return gallery_data
+
+    @classmethod
+    def get_upload_progress(cls, gallery_name):
+        return cls._upload_progress.get(gallery_name)
 
 
     def _get_or_create_node(self, root_node, path):

@@ -6,7 +6,39 @@ class ReportService:
     def __init__(self, config):
         self.config = config
 
-    def generate_html_report(self, gallery_data, gallery_name, base_url):
+    def filter_report_data(self, node, report_mode):
+        # Filter this node's direct images
+        if report_mode == 'good_only':
+            filtered_images = [img for img in node.get('images', []) if img.get('status') == 'good']
+        elif report_mode == 'good_and_neutral':
+            filtered_images = [img for img in node.get('images', []) if img.get('status') in ['good', 'neutral']]
+        else:
+            # Default to good_only if an invalid mode is passed
+            filtered_images = [img for img in node.get('images', []) if img.get('status') == 'good']
+
+        # Recursively filter children
+        filtered_children = []
+        if node.get('children'):
+            for child in node['children']:
+                filtered_child = self.filter_report_data(child, report_mode)
+                if filtered_child:
+                    filtered_children.append(filtered_child)
+
+        # A node is kept if it has direct filtered_images or if it has any children that were kept
+        if len(filtered_images) > 0 or filtered_children:
+            # Return a new node object with the filtered data
+            new_node = node.copy()
+            new_node['images'] = filtered_images
+            new_node['children'] = filtered_children
+            return new_node
+
+        # If a node has no direct 'good' images and no children after filtering, discard it
+        return None
+
+    def generate_html_report(self, gallery_data, gallery_name, base_url, report_mode):
+        gallery_data = self.filter_report_data(gallery_data, report_mode)
+        if not gallery_data:
+            return "<h1>No good images to report.</h1>"
         
         # List to store TOC entries
         toc_entries = []
@@ -150,7 +182,10 @@ class ReportService:
         return render_template_string(html_template)
 
 
-    def generate_markdown_report(self, gallery_data, gallery_name, base_url):
+    def generate_markdown_report(self, gallery_data, gallery_name, base_url, report_mode):
+        gallery_data = self.filter_report_data(gallery_data, report_mode)
+        if not gallery_data:
+            return "# No good images to report."
         
         def render_node_md(node, level=1, current_path_parts=None):
             if current_path_parts is None:

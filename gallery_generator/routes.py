@@ -131,7 +131,7 @@ def update_comment(gallery_name):
         current_app.socketio.emit('gallery_updated', updated_gallery_data)
         return jsonify({'message': 'Comment updated successfully'}), 200
     else:
-        return jsonify({'error': 'Failed to update comment'}), 500
+        return jsonify({'error': 'Failed to update comment!'}), 500
 
 @main.route('/gallery/<gallery_name>/update_status', methods=['POST'])
 def update_image_status(gallery_name):
@@ -150,7 +150,7 @@ def update_image_status(gallery_name):
         current_app.socketio.emit('gallery_updated', {'message': f'Image status updated to {status}', 'gallery_data': updated_gallery_data})
         return jsonify({'message': 'Image status updated successfully'}), 200
     else:
-        return jsonify({'error': 'Failed to update image status'}), 500
+        return jsonify({'error': 'Failed to update image status!'}), 500
 
 @main.route('/images/<gallery_name>/<path:image_path>')
 def serve_image(gallery_name, image_path):
@@ -204,7 +204,7 @@ def revert_version(gallery_name):
         current_app.socketio.emit('gallery_updated', updated_gallery_data)
         return jsonify({'message': 'Successfully reverted'}), 200
     else:
-        return jsonify({'error': 'Failed to revert version'}), 500
+        return jsonify({'error': 'Failed to revert version!'}), 500
 
 @main.route('/gallery/<gallery_name>/export_report', methods=['POST'])
 def export_report(gallery_name):
@@ -212,6 +212,7 @@ def export_report(gallery_name):
     report_format = data.get('format')
     gallery_data = data.get('gallery_data')
     selected_version = data.get('selected_version', 'current') # Get selected version, default to 'current'
+    report_mode = data.get('report_mode', 'good_only') # Get report mode, default to 'good_only'
 
     if not report_format or not gallery_data:
         return jsonify({'error': 'Missing format or gallery data'}), 400
@@ -239,11 +240,11 @@ def export_report(gallery_name):
         base_filename = f"{gallery_name}_{version_suffix}"
 
         if report_format == 'html':
-            report_content = report_service.generate_html_report(gallery_data, gallery_name, base_url)
+            report_content = report_service.generate_html_report(gallery_data, gallery_name, base_url, report_mode)
             mimetype = 'text/html'
             download_name = f"{base_filename}.html"
         elif report_format == 'markdown':
-            report_content = report_service.generate_markdown_report(gallery_data, gallery_name, base_url)
+            report_content = report_service.generate_markdown_report(gallery_data, gallery_name, base_url, report_mode)
             mimetype = 'text/markdown'
             download_name = f"{base_filename}.md"
         else:

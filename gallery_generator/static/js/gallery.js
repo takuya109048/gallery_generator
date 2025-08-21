@@ -8,7 +8,23 @@ document.addEventListener('DOMContentLoaded', () => {
     const revertVersionBtn = document.getElementById('revert-version-btn');
     const exportHtmlBtn = document.getElementById('export-html-btn');
     const exportMdBtn = document.getElementById('export-md-btn');
+    const reportModeGoodBtn = document.getElementById('report-mode-good-btn');
+    const reportModeGoodNeutralBtn = document.getElementById('report-mode-good-neutral-btn');
     const menuToggle = document.getElementById('menu-toggle');
+
+    let currentReportMode = 'good_only';
+
+    reportModeGoodBtn.addEventListener('click', () => {
+        currentReportMode = 'good_only';
+        reportModeGoodBtn.classList.add('active');
+        reportModeGoodNeutralBtn.classList.remove('active');
+    });
+
+    reportModeGoodNeutralBtn.addEventListener('click', () => {
+        currentReportMode = 'good_and_neutral';
+        reportModeGoodNeutralBtn.classList.add('active');
+        reportModeGoodBtn.classList.remove('active');
+    });
     const menuSidebar = document.getElementById('menu-sidebar');
     const closeMenuBtn = document.getElementById('close-menu-btn');
 
@@ -769,7 +785,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify({
                     format: format.toLowerCase(),
                     gallery_data: filteredData, // Send the filtered data
-                    selected_version: selectedVersionFilename // Pass the selected version filename
+                    selected_version: selectedVersionFilename, // Pass the selected version filename
+                    report_mode: currentReportMode // Pass the report mode
                 }),
             });
 

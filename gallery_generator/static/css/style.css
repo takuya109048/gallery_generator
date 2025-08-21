@@ -564,3 +564,15 @@ body {
 #confirm-deletion:hover {
     background-color: #c82333; /* Darker red on hover */
 }
+
+/* Report Mode Button Styles */
+.report-mode-btn {
+    background-color: #6c757d; /* Default grey */
+    opacity: 0.6;
+}
+
+.report-mode-btn.active {
+    background-color: var(--accent-color); /* Blue for active */
+    opacity: 1.0;
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
+}

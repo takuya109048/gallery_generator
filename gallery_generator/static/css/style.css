@@ -313,6 +313,14 @@ body {
     border-radius: 3px;
 }
 
+.heading-checkbox {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    vertical-align: middle; /* Align with text */
+    margin-right: 10px; /* Space between checkbox and heading text */
+}
+
 /* Comment Form */
 .comment-form {
     margin-top: 20px;

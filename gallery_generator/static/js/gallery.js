@@ -4,7 +4,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const dateFilter = document.getElementById('date-filter');
     const dropArea = document.getElementById('drop-area');
     const fileElem = document.getElementById('fileElem');
-    const deletionModeToggle = document.getElementById('deletion-mode-toggle');
     const confirmDeletionBtn = document.getElementById('confirm-deletion');
     const versionHistorySelect = document.getElementById('version-history-select');
     const revertVersionBtn = document.getElementById('revert-version-btn');
@@ -23,7 +22,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     let currentGalleryData = {};
-    let isDeletionMode = false;
     let selectedImages = new Set();
     let lastSelectedImage = null;
 
@@ -224,7 +222,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const headingId = `heading-${sanitizedHeadingText}-${uniqueHash}-${level}`;
 
                 currentSectionHtml += `<div class="gallery-section" id="${headingId}">`;
-                currentSectionHtml += `<h${level + 1}>${headingText}</h${level + 1}>`;
+                currentSectionHtml += `<h${level + 1}><input type="checkbox" class="heading-checkbox" data-heading-id="${headingId}"> ${headingText}</h${level + 1}>`;
 
                 // Comment form - only display if there are direct images in this node
                 if (hasDirectImages) {
@@ -246,7 +244,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const displayName = image.filename.substring(0, image.filename.lastIndexOf('_'));
                     currentSectionHtml += `
                         <div class="image-item" data-full-path="${image.full_path}">
-                            <input type="checkbox" class="checkbox" ${isDeletionMode ? '' : 'style="display:none;"'} ${selectedImages.has(image.full_path) ? 'checked' : ''}>
+                            <input type="checkbox" class="checkbox" ${selectedImages.has(image.full_path) ? 'checked' : ''}>
                             <img src="${placeholderUrl}" data-src="${imageUrl}" alt="${image.filename}" class="lazyload">
                             <p>${displayName}</p>
                         </div>
@@ -484,73 +482,63 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }
                 lastSelectedImage = fullPath;
+                
+                // Update parent heading checkbox state
+                const parentSection = imageItem.closest('.gallery-section');
+                if (parentSection) {
+                    const headingCheckbox = parentSection.querySelector('.heading-checkbox');
+                    if (headingCheckbox) {
+                        const allImagesInParentSection = parentSection.querySelectorAll('.image-item .checkbox');
+                        const allCheckedInParentSection = Array.from(allImagesInParentSection).every(cb => cb.checked);
+                        headingCheckbox.checked = allCheckedInParentSection;
+                    }
+                }
                 updateConfirmDeletionButtonState();
             });
         });
 
-        // Heading selection for deletion mode
-        document.querySelectorAll('.gallery-section h2, .gallery-section h3, .gallery-section h4, .gallery-section h5, .gallery-section h6').forEach(heading => {
-            heading.style.cursor = 'pointer'; // Indicate it's clickable
-            heading.addEventListener('click', (e) => {
-                if (!isDeletionMode) return;
-
+        // Heading checkbox selection
+        document.querySelectorAll('.heading-checkbox').forEach(headingCheckbox => {
+            headingCheckbox.addEventListener('click', (e) => {
+                e.stopPropagation(); // Prevent heading click event if any
                 const section = e.target.closest('.gallery-section');
-                const sectionId = section.id;
-                
-                // Find the corresponding node in currentGalleryData
-                let targetNode = null;
-                const findNode = (node, id) => {
-                    if (`heading-${node.name.replace(/\s+/g, '-').toLowerCase()}-${node.level}` === id) {
-                        targetNode = node;
-                        return true;
-                    }
-                    for (const child of node.children) {
-                        if (findNode(child, id)) return true;
-                    }
-                    return false;
-                };
-                
-                // Need to add level to the node in the JSON data for this to work reliably
-                // For now, let's assume a simpler approach by getting all images under this section
-                // and its sub-sections by traversing the DOM.
+                const isChecked = e.target.checked;
 
-                const imagesUnderHeading = section.querySelectorAll('.image-item');
-                const allChecked = Array.from(imagesUnderHeading).every(item => item.querySelector('.checkbox').checked);
+                // Get all image checkboxes within this section and its child sections
+                const imageCheckboxes = section.querySelectorAll('.image-item .checkbox');
 
-                imagesUnderHeading.forEach(imageItem => {
-                    const checkbox = imageItem.querySelector('.checkbox');
-                    const fullPath = imageItem.dataset.fullPath;
-                    if (allChecked) {
-                        checkbox.checked = false;
-                        selectedImages.delete(fullPath);
-                    } else {
-                        checkbox.checked = true;
+                imageCheckboxes.forEach(checkbox => {
+                    const fullPath = checkbox.closest('.image-item').dataset.fullPath;
+                    checkbox.checked = isChecked;
+                    if (isChecked) {
                         selectedImages.add(fullPath);
+                    } else {
+                        selectedImages.delete(fullPath);
                     }
                 });
                 updateConfirmDeletionButtonState();
             });
         });
+
+        // Existing heading click listener (now only for smooth scrolling if checkbox is not clicked)
+        document.querySelectorAll('.gallery-section h2, .gallery-section h3, .gallery-section h4, .gallery-section h5, .gallery-section h6').forEach(heading => {
+            heading.style.cursor = 'pointer'; // Indicate it's clickable
+            heading.addEventListener('click', (e) => {
+                // If the click was on the checkbox, do nothing here as it's handled by the checkbox listener
+                if (e.target.classList.contains('heading-checkbox')) {
+                    return;
+                }
+
+                // Original logic for heading click (e.g., smooth scrolling, if implemented)
+                // For now, this part is effectively a no-op unless specific heading click behavior is desired.
+                // The previous logic for selecting all images under a heading is now moved to the heading-checkbox listener.
+            });
+        });
     };
 
     const updateConfirmDeletionButtonState = () => {
-        if (isDeletionMode && selectedImages.size > 0) {
-            confirmDeletionBtn.disabled = false;
-        } else {
-            confirmDeletionBtn.disabled = true;
-        }
+        confirmDeletionBtn.disabled = selectedImages.size === 0;
     };
-
-    deletionModeToggle.addEventListener('click', () => {
-        isDeletionMode = !isDeletionMode;
-        deletionModeToggle.textContent = isDeletionMode ? 'Exit Deletion Mode' : 'Deletion Mode';
-        document.querySelectorAll('.image-item .checkbox').forEach(checkbox => {
-            checkbox.style.display = isDeletionMode ? 'block' : 'none';
-            checkbox.checked = false; // Deselect all when toggling mode
-        });
-        selectedImages.clear();
-        updateConfirmDeletionButtonState();
-    });
 
     confirmDeletionBtn.addEventListener('click', async () => {
         if (confirmDeletionBtn.disabled) return;
@@ -576,8 +564,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const result = await response.json();
                 showMessage(result.message, 'success');
                 selectedImages.clear();
-                isDeletionMode = false; // Exit deletion mode after deletion
-                deletionModeToggle.textContent = 'Deletion Mode';
                 fetchAndRenderGallery(); // Re-render gallery
             } else {
                 const error = await response.json();

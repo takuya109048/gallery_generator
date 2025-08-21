@@ -220,7 +220,13 @@ def export_report(gallery_name):
     report_service = ReportService(current_app.storage)
     
     try:
-        base_url = request.url_root.rstrip('/')
+        config_manager = current_app.config['CONFIG']
+        configured_base_url = config_manager.get('REPORT_BASE_URL')
+        
+        if configured_base_url:
+            base_url = configured_base_url.rstrip('/')
+        else:
+            base_url = request.url_root.rstrip('/')
         report_content = ""
         mimetype = ""
         

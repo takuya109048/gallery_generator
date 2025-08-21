@@ -75,7 +75,7 @@ def _process_upload_in_background(app, file_content, original_filename, gallery_
                         existing.get('images', []).append(new_image)
 
                 existing_children_map = {child['name']: child for child in existing.get('children', [])}
-                for new_child in new.get('children', []) :
+                for new_child in new.get('children') :
                     if new_child['name'] in existing_children_map:
                         merge_data(existing_children_map[new_child['name']], new_child)
                     else:
@@ -214,16 +214,17 @@ def export_report(gallery_name):
     if not report_format or not gallery_data:
         return jsonify({'error': 'Missing format or gallery data'}), 400
 
-    # Note: ReportService might need storage access if it deals with images directly
     report_service = ReportService(current_app.storage)
     
     try:
+        base_url = request.url_root.rstrip('/')
+
         if report_format == 'html':
             report_content = report_service.generate_html_report(gallery_data, gallery_name)
             mimetype = 'text/html'
             download_name = 'report.html'
         elif report_format == 'markdown':
-            report_content = report_service.generate_markdown_report(gallery_data, gallery_name)
+            report_content = report_service.generate_markdown_report(gallery_data, gallery_name, base_url)
             mimetype = 'text/markdown'
             download_name = 'report.md'
         else:

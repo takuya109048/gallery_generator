@@ -186,6 +186,8 @@ body {
 .header-icon-button:disabled {
     background-color: #ccc;
     cursor: not-allowed;
+    color: #666; /* Ensure text is visible on disabled state */
+    opacity: 0.6; /* Add opacity to make them appear faded */
 }
 
 #deletion-mode-toggle {
@@ -513,22 +515,46 @@ body {
 
 /* Image Status Styles */
 .image-item.good-image {
-    border: 2px solid #007bff; /* Blue border for good images */
-    box-shadow: 0 0 8px rgba(0, 123, 255, 0.5); /* Optional: subtle glow */
-}
-
-.image-item.bad-image {
-    /* Remove opacity from the parent container */
-    /* opacity: 0.5; */ /* REMOVED */
-    /* filter: grayscale(50%); */ /* Keep grayscale if desired, but apply to image */
+    border: 4px solid #7CFC00; /* Brighter green (LimeGreen) */
+    box-shadow: 0 0 5px 2px rgba(124, 252, 0, 0.7); /* Stronger, more spread-out glow */
 }
 
 .image-item.bad-image img {
     opacity: 0.5; /* Apply opacity directly to the image */
-    filter: grayscale(50%); /* Apply grayscale directly to the image */
+    filter: grayscale(100%); /* Apply grayscale directly to the image */
 }
 
 /* Ensure checkbox remains fully opaque */
 .image-item.bad-image .checkbox {
     opacity: 1; /* Explicitly set opacity to 1 for the checkbox */
+}
+
+/* Specific button colors */
+#status-good-btn {
+    background-color: #28a745; /* Green */
+}
+#status-good-btn:hover {
+    background-color: #218838; /* Darker green on hover */
+}
+
+#status-bad-btn {
+    background-color: #ffc107; /* Warning yellow/orange */
+    color: #212529; /* Dark text for contrast on light background */
+}
+#status-bad-btn:hover {
+    background-color: #e0a800; /* Darker yellow/orange on hover */
+}
+
+#status-neutral-btn {
+    background-color: #6c757d; /* Secondary grey */
+}
+#status-neutral-btn:hover {
+    background-color: #545b62; /* Darker grey on hover */
+}
+
+#confirm-deletion {
+    background-color: #dc3545; /* Danger red */
+}
+#confirm-deletion:hover {
+    background-color: #c82333; /* Darker red on hover */
 }

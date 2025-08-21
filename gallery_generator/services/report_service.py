@@ -47,7 +47,7 @@ class ReportService:
         return render_template_string(html_template, gallery_data=gallery_data, gallery_name=gallery_name)
 
 
-    def generate_markdown_report(self, gallery_data, gallery_name):
+    def generate_markdown_report(self, gallery_data, gallery_name, base_url):
         
         def render_node_md(node, level=1):
             md = ""
@@ -59,7 +59,7 @@ class ReportService:
 
             if node.get('images'):
                 for image in node['images']:
-                    image_path = f"/images/{gallery_name}/{image.get('full_path')}"
+                    image_path = f"{base_url}/images/{gallery_name}/{image.get('full_path')}"
                     md += f"![{image.get('filename')}]({image_path})\n"
                     md += f"*{image.get('filename')}*\n\n"
 

@@ -510,3 +510,25 @@ body {
     text-align: center;
     box-sizing: border-box;
 }
+
+/* Image Status Styles */
+.image-item.good-image {
+    border: 2px solid #007bff; /* Blue border for good images */
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.5); /* Optional: subtle glow */
+}
+
+.image-item.bad-image {
+    /* Remove opacity from the parent container */
+    /* opacity: 0.5; */ /* REMOVED */
+    /* filter: grayscale(50%); */ /* Keep grayscale if desired, but apply to image */
+}
+
+.image-item.bad-image img {
+    opacity: 0.5; /* Apply opacity directly to the image */
+    filter: grayscale(50%); /* Apply grayscale directly to the image */
+}
+
+/* Ensure checkbox remains fully opaque */
+.image-item.bad-image .checkbox {
+    opacity: 1; /* Explicitly set opacity to 1 for the checkbox */
+}

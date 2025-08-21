@@ -132,6 +132,25 @@ def update_comment(gallery_name):
     else:
         return jsonify({'error': 'Failed to update comment'}), 500
 
+@main.route('/gallery/<gallery_name>/update_status', methods=['POST'])
+def update_image_status(gallery_name):
+    data = request.get_json()
+    image_paths = data.get('image_paths')
+    status = data.get('status')
+
+    if not image_paths or not status:
+        return jsonify({'error': 'Missing image_paths or status'}), 400
+
+    if status not in ['good', 'bad', 'neutral']:
+        return jsonify({'error': 'Invalid status'}), 400
+
+    if current_app.data_manager.update_image_status(image_paths, status, gallery_name):
+        updated_gallery_data = current_app.data_manager.read_gallery_data(gallery_name)
+        current_app.socketio.emit('gallery_updated', {'message': f'Image status updated to {status}', 'gallery_data': updated_gallery_data})
+        return jsonify({'message': 'Image status updated successfully'}), 200
+    else:
+        return jsonify({'error': 'Failed to update image status'}), 500
+
 @main.route('/images/<gallery_name>/<path:image_path>')
 def serve_image(gallery_name, image_path):
     storage = current_app.storage

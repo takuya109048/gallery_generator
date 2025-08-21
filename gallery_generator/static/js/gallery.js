@@ -7,10 +7,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const versionHistorySelect = document.getElementById('version-history-select');
     const revertVersionBtn = document.getElementById('revert-version-btn');
     const exportReportBtn = document.getElementById('export-report-btn');
-    const zipPathDisplay = document.getElementById('zip-path-display'); // This element doesn't seem to exist in index.html
     const menuToggle = document.getElementById('menu-toggle');
     const menuSidebar = document.getElementById('menu-sidebar');
     const closeMenuBtn = document.getElementById('close-menu-btn');
+
+    // New status buttons
+    const statusGoodBtn = document.getElementById('status-good-btn');
+    const statusBadBtn = document.getElementById('status-bad-btn');
+    const statusNeutralBtn = document.getElementById('status-neutral-btn');
 
     // Get gallery name from the body's data attribute
     const galleryName = document.body.dataset.galleryName;
@@ -127,7 +131,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         progressBarToast = null;
                         progressBarInner = null;
                     }
-                } else if (progress === -1) {
+                }
+            } else if (progress === -1) {
                     // Handle error state
                     showMessage('Previous upload failed. Please try again.', 'error');
                     if (progressBarToast) {
@@ -138,7 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }
             }
-        } catch (error) {
+         catch (error) {
             console.error('Error checking upload status:', error);
             // Do not show error message to user, as it might be a transient network issue
         }
@@ -172,7 +177,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 populateDateFilter(currentGalleryData);
                 populateVersionHistory();
             }
-        } catch (error) {
+        }
+        catch (error) {
             console.error('Error fetching gallery data:', error);
             // If there's an error, initialize with empty data
             currentGalleryData = {"name": "root", "images": [], "comment": "", "children": []};
@@ -241,8 +247,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     const imageUrl = `/images/${galleryName}/${image.full_path}`;
                     const placeholderUrl = `/static/images/placeholder.jpg`;
                     const displayName = image.filename.substring(0, image.filename.lastIndexOf('_'));
+                    const imageStatusClass = image.status === 'good' ? 'good-image' : (image.status === 'bad' ? 'bad-image' : '');
+
                     currentSectionHtml += `
-                        <div class="image-item" data-full-path="${image.full_path}">
+                        <div class="image-item ${imageStatusClass}" data-full-path="${image.full_path}" data-status="${image.status}">
                             <input type="checkbox" class="checkbox" ${selectedImages.has(image.full_path) ? 'checked' : ''}>
                             <img src="${placeholderUrl}" data-src="${imageUrl}" alt="${image.filename}" class="lazyload">
                             <p>${displayName}</p>
@@ -461,6 +469,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }
                 updateConfirmDeletionButtonState();
+                updateStatusButtonsState(); // Update status buttons when selection changes
             });
         });
 
@@ -484,6 +493,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 });
                 updateConfirmDeletionButtonState();
+                updateStatusButtonsState(); // Update status buttons when selection changes
             });
         });
 
@@ -506,6 +516,65 @@ document.addEventListener('DOMContentLoaded', () => {
     const updateConfirmDeletionButtonState = () => {
         confirmDeletionBtn.disabled = selectedImages.size === 0;
     };
+
+    const updateStatusButtonsState = () => {
+        const isDisabled = selectedImages.size === 0;
+        statusGoodBtn.disabled = isDisabled;
+        statusBadBtn.disabled = isDisabled;
+        statusNeutralBtn.disabled = isDisabled;
+    };
+
+    // Event listeners for status buttons
+    statusGoodBtn.addEventListener('click', () => updateImageStatus('good'));
+    statusBadBtn.addEventListener('click', () => updateImageStatus('bad'));
+    statusNeutralBtn.addEventListener('click', () => updateImageStatus('neutral'));
+
+    const updateImageStatus = async (status) => {
+        if (selectedImages.size === 0) {
+            showMessage('No images selected to update status.', 'info');
+            return;
+        }
+
+        try {
+            const response = await fetch(`/gallery/${galleryName}/update_status`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ image_paths: Array.from(selectedImages), status: status }),
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                showMessage(result.message, 'success');
+
+                // Uncheck all currently selected images and clear the selection
+                selectedImages.forEach(fullPath => {
+                    const imageItem = document.querySelector(`.image-item[data-full-path="${fullPath}"]`);
+                    if (imageItem) {
+                        const checkbox = imageItem.querySelector('.checkbox');
+                        if (checkbox) {
+                            checkbox.checked = false;
+                        }
+                    }
+                });
+                selectedImages.clear();
+                lastSelectedImage = null; // Reset last selected image
+                updateConfirmDeletionButtonState(); // Update button states after clearing selection
+                updateStatusButtonsState(); // Update status buttons after clearing selection
+
+                // Re-fetch and render gallery to reflect the new status visually
+                fetchAndRenderGallery();
+            } else {
+                const error = await response.json();
+                showMessage(`Failed to update image status: ${error.error}`, 'error');
+            }
+        } catch (error) {
+            console.error('Error updating image status:', error);
+            showMessage('An error occurred while updating image status.', 'error');
+        }
+    };
+
 
     confirmDeletionBtn.addEventListener('click', async () => {
         if (confirmDeletionBtn.disabled) return;
@@ -730,6 +799,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initial fetch and render
     fetchAndRenderGallery();
     updateConfirmDeletionButtonState();
+    updateStatusButtonsState(); // Initialize status button states
     checkUploadStatusAndDisplayProgressBar();
 
     // Modify fetchAndRenderGallery to not rely on parsing HTML for data

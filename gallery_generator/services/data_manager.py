@@ -29,12 +29,24 @@ class DataManager:
             try:
                 data = self.storage.load(gallery_path)
                 gallery_data = json.loads(data.decode('utf-8'))
+                self._ensure_image_status(gallery_data) # Ensure all images have a status
                 self._sort_gallery_data(gallery_data)
                 return gallery_data
             except (json.JSONDecodeError, UnicodeDecodeError) as e:
                 logger.error(f"Error decoding JSON from {gallery_path}: {e}")
                 return None
+        # Initialize with default status for new galleries
         return {"name": "root", "images": [], "comment": "", "children": []}
+
+    def _ensure_image_status(self, node: dict):
+        """Recursively ensures all images have a 'status' field, defaulting to 'neutral'."""
+        if 'images' in node and isinstance(node['images'], list):
+            for image in node['images']:
+                if 'status' not in image:
+                    image['status'] = 'neutral'
+        if 'children' in node and isinstance(node['children'], list):
+            for child in node['children']:
+                self._ensure_image_status(child)
 
     def _sort_gallery_data(self, node: dict):
         if 'images' in node and isinstance(node['images'], list):
@@ -129,6 +141,32 @@ class DataManager:
             return self.write_gallery_data(gallery_data, gallery_name)
         else:
             logger.error(f"Node not found for path: {path}")
+            return False
+
+    def update_image_status(self, image_paths: list[str], status: str, gallery_name: str) -> bool:
+        gallery_data = self.read_gallery_data(gallery_name)
+        if not gallery_data:
+            logger.error("Failed to read gallery data for image status update.")
+            return False
+
+        updated = False
+        def _traverse_and_update(node):
+            nonlocal updated
+            if 'images' in node and isinstance(node['images'], list):
+                for image in node['images']:
+                    if image.get('full_path') in image_paths:
+                        image['status'] = status
+                        updated = True
+            if 'children' in node and isinstance(node['children'], list):
+                for child in node['children']:
+                    _traverse_and_update(child)
+
+        _traverse_and_update(gallery_data)
+
+        if updated:
+            return self.write_gallery_data(gallery_data, gallery_name)
+        else:
+            logger.warning("No images found matching the provided paths for status update.")
             return False
 
     def _find_node_by_path(self, current_node: dict, path: str) -> dict | None:

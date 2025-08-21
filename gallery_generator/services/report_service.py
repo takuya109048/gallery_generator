@@ -30,7 +30,6 @@ class ReportService:
             if node_name != 'root' and has_direct_images:
                 html += f"<div class=\"gallery-section\">"
                 html += f"<h2>{full_path}</h2>" # Fixed to <h2>
-                # html += f"<h{level + 1}>{full_path}</h{level + 1}>" # Original line
 
                 if node.get('comment'):
                     html += f"<p>{node.get('comment')}</p>"
@@ -70,7 +69,7 @@ class ReportService:
             </style>
         </head>
         <body>
-            <h1>Gallery Report</h1>
+            <h1>{gallery_name}</h1> <!-- Changed to gallery_name -->
             {rendered_content}
         </body>
         </html>
@@ -119,5 +118,7 @@ class ReportService:
             
             return md
 
-        markdown_content = render_node_md(gallery_data)
+        # Add top-level heading for Markdown report
+        markdown_content = f"# {gallery_name}\n\n" # Added top-level heading
+        markdown_content += render_node_md(gallery_data)
         return markdown_content

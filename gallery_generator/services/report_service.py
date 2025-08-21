@@ -90,13 +90,42 @@ class ReportService:
             <meta charset="UTF-8">
             <title>Gallery Report</title>
             <style>
-                body {{ font-family: sans-serif; margin: 0; display: flex; }}
-                .sidebar {{ width: 250px; padding: 20px; background-color: #f0f0f0; border-right: 1px solid #ccc; overflow-y: auto; }}
+                body {{ font-family: sans-serif; margin: 0; }}
+                .app-header {{
+                    display: flex;
+                    align-items: center;
+                    padding: 10px 20px;
+                    background-color: #e9ecef;
+                    border-bottom: 1px solid #ced4da;
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    height: 58px;
+                    z-index: 1000;
+                    box-sizing: border-box;
+                }}
+                .app-logo {{
+                    font-size: 22px;
+                    font-weight: bold;
+                }}
+                .sidebar {{ 
+                    width: 300px; 
+                    padding: 20px; 
+                    background-color: #f0f0f0; 
+                    border-right: 1px solid #ccc; 
+                    overflow-y: auto; 
+                    position: fixed; 
+                    height: calc(100vh - 58px); 
+                    top: 58px; 
+                    left: 0; 
+                }}
                 .sidebar h3 {{ margin-top: 0; }}
                 .sidebar ul {{ list-style: none; padding: 0; }}
-                .sidebar li a {{ display: block; padding: 5px 0; text-decoration: none; color: #333; }}
+                .sidebar li a {{ display: block; padding: 5px 0; text-decoration: none; color: #333; font-size: 14px; }}
                 .sidebar li a:hover {{ background-color: #e0e0e0; }}
-                .main-content {{ flex-grow: 1; padding: 20px; }}
+                .main-content {{ padding: 20px; margin-left: 340px; margin-top: 58px; }}
+                .main-content h3 {{ scroll-margin-top: 58px; }}
                 .image-grid {{ display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }}
                 .image-item img {{ width: 100%; height: auto; }}
                 .comment-box {{ border: 1px solid #ccc; padding: 10px; margin-bottom: 10px; background-color: #f9f9f9; border-radius: 5px; }}
@@ -104,13 +133,14 @@ class ReportService:
             </style>
         </head>
         <body>
+            <div class="app-header">
+                <span class="app-logo">{gallery_name} Report</span>
+            </div>
             <div class="sidebar">
                 <h3>Table of Contents</h3>
                 {toc_html}
             </div>
             <div class="main-content">
-                <h2>{gallery_name}</h2>
-                <hr> <!-- Added horizontal rule after main title -->
                 {rendered_content}
             </div>
         </body>

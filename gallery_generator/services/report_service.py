@@ -1,5 +1,6 @@
 import os
 from flask import render_template_string
+import re # Import re
 
 class ReportService:
     def __init__(self, config):
@@ -32,9 +33,9 @@ class ReportService:
                 html += f"<h3>{full_path}</h3>"
 
                 if node.get('comment'):
-                    html += f"<div class=\"comment-box\"><p>{node.get('comment')}</p></div>" # Wrapped in comment-box
+                    html += f"<div class=\"comment-box\"><p>{node.get('comment')}</p></div>"
                 
-                html += "<div class=\"image-grid\">"
+                html += "<div class=\"image-grid\">";
                 if node.get('images'):
                     for image in node['images']:
                         image_src = f"{base_url}/images/{gallery_name}/{image.get('full_path')}"
@@ -111,12 +112,15 @@ class ReportService:
                 md += f"### {full_path}\n\n"
             
                 if node.get('comment'):
-                    md += f"```txt\n{node.get('comment')}\n```\n\n" # Wrapped in code block
+                    md += f"```txt\n{node.get('comment')}\n```\n\n"
                 
                 if node.get('images'):
+                    # Start HTML for 3-column grid
+                    md += "<div style=\"display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;\">"
                     for image in node['images']:
                         image_path = f"{base_url}/images/{gallery_name}/{image.get('full_path')}"
-                        md += f"![{image.get('filename')}]({image_path})\n"
+                        md += f"  <div style='text-align: center;'><img src='{image_path}' alt='{image.get('filename')}' style='width: 100%; height: auto;'></div>\n"
+                    md += "</div>\n\n"
                 md += "---\n\n" # Add Markdown horizontal rule after each section
 
             if node.get('children'):
@@ -130,8 +134,9 @@ class ReportService:
         markdown_content += "---\n\n" # Added horizontal rule after main title
         markdown_content += render_node_md(gallery_data)
         
-        # Remove the last \"---\" if it exists
-        if markdown_content.endswith("---\n\n"):
-            markdown_content = markdown_content[:-5] # Remove "---\n\n"
+        # Remove the last "---" if it exists, along with any trailing newlines
+        # Use a regex for more robust removal of trailing horizontal rules
+        markdown_content = re.sub(r'---\n\n$', '', markdown_content) # Remove "---" followed by two newlines at the end
+        markdown_content = markdown_content.rstrip() # Remove any remaining trailing whitespace
 
         return markdown_content

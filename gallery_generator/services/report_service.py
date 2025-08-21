@@ -5,7 +5,7 @@ class ReportService:
     def __init__(self, config):
         self.config = config
 
-    def generate_html_report(self, gallery_data, gallery_name):
+    def generate_html_report(self, gallery_data, gallery_name, base_url):
         
         html_template = """
         <!DOCTYPE html>
@@ -30,8 +30,7 @@ class ReportService:
                     <div class="image-grid">
                         {% for image in node.images %}
                             <div class="image-item">
-                                <img src="/images/{{ gallery_name }}/{{ image.full_path }}" alt="{{ image.filename }}">
-                                <p>{{ image.filename }}</p>
+                                <img src="{{ base_url }}/images/{{ gallery_name }}/{{ image.full_path }}" alt="{{ image.filename }}">
                             </div>
                         {% endfor %}
                     </div>
@@ -44,7 +43,7 @@ class ReportService:
         </html>
         """
         
-        return render_template_string(html_template, gallery_data=gallery_data, gallery_name=gallery_name)
+        return render_template_string(html_template, gallery_data=gallery_data, gallery_name=gallery_name, base_url=base_url)
 
 
     def generate_markdown_report(self, gallery_data, gallery_name, base_url):
@@ -61,7 +60,6 @@ class ReportService:
                 for image in node['images']:
                     image_path = f"{base_url}/images/{gallery_name}/{image.get('full_path')}"
                     md += f"![{image.get('filename')}]({image_path})\n"
-                    md += f"*{image.get('filename')}*\n\n"
 
             if node.get('children'):
                 for child in node['children']:

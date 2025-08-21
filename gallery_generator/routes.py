@@ -220,7 +220,7 @@ def export_report(gallery_name):
         base_url = request.url_root.rstrip('/')
 
         if report_format == 'html':
-            report_content = report_service.generate_html_report(gallery_data, gallery_name)
+            report_content = report_service.generate_html_report(gallery_data, gallery_name, base_url)
             mimetype = 'text/html'
             download_name = 'report.html'
         elif report_format == 'markdown':

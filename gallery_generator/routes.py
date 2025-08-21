@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, jsonify, current_app, send_from_directory, session, redirect, url_for, send_file
+from flask import Blueprint, render_template, request, jsonify, current_app, send_from_directory, session, redirect, url_for, send_file, make_response
 from gallery_generator.services.upload_service import UploadService
 from gallery_generator.services.delete_service import DeleteService
 from gallery_generator.services.report_service import ReportService
@@ -218,6 +218,9 @@ def export_report(gallery_name):
     
     try:
         base_url = request.url_root.rstrip('/')
+        report_content = ""
+        mimetype = ""
+        download_name = ""
 
         if report_format == 'html':
             report_content = report_service.generate_html_report(gallery_data, gallery_name, base_url)
@@ -230,12 +233,11 @@ def export_report(gallery_name):
         else:
             return jsonify({'error': 'Invalid format specified'}), 400
 
-        return send_file(
-            io.BytesIO(report_content.encode('utf-8')),
-            mimetype=mimetype,
-            as_attachment=True,
-            download_name=download_name
-        )
+        response = make_response(io.BytesIO(report_content.encode('utf-8')))
+        response.headers['Content-Type'] = mimetype
+        response.headers['Content-Disposition'] = f'attachment; filename="{download_name}"'
+        return response
+
     except Exception as e:
         logger.error(f"Error generating report: {e}")
         return jsonify({'error': 'Failed to generate report'}), 500

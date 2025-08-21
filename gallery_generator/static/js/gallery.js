@@ -266,7 +266,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     nodeTocHtml += `<ul>${childrenAccumulatedTocHtml}</ul>`;
                 }
                 nodeTocHtml += `</li>`;
-            } else {
+            }
+            else {
                 // If this node's heading is not rendered, its children's TOC entries should still be passed up
                 nodeTocHtml += childrenAccumulatedTocHtml;
             }
@@ -717,11 +718,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Export Report
     exportReportBtn.addEventListener('click', async () => {
-        const format = prompt("Enter export format (html, markdown, pdf):");
+        const format = prompt("Enter export format (html, markdown):");
         if (!format) return;
 
-        if (!['html', 'markdown', 'pdf'].includes(format.toLowerCase())) {
-            showMessage("Invalid format. Please choose html, markdown, or pdf.", 'error');
+        if (!['html', 'markdown'].includes(format.toLowerCase())) {
+            showMessage("Invalid format. Please choose html or markdown.", 'error');
             return;
         }
 

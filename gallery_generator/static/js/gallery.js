@@ -6,7 +6,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const confirmDeletionBtn = document.getElementById('confirm-deletion');
     const versionHistorySelect = document.getElementById('version-history-select');
     const revertVersionBtn = document.getElementById('revert-version-btn');
-    const exportReportBtn = document.getElementById('export-report-btn');
+    const exportHtmlBtn = document.getElementById('export-html-btn');
+    const exportMdBtn = document.getElementById('export-md-btn');
     const menuToggle = document.getElementById('menu-toggle');
     const menuSidebar = document.getElementById('menu-sidebar');
     const closeMenuBtn = document.getElementById('close-menu-btn');
@@ -717,10 +718,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Export Report
-    exportReportBtn.addEventListener('click', async () => {
-        const format = prompt("Enter export format (html, markdown):");
-        if (!format) return;
-
+    const exportReport = async (format) => {
         if (!['html', 'markdown'].includes(format.toLowerCase())) {
             showMessage("Invalid format. Please choose html or markdown.", 'error');
             return;
@@ -783,7 +781,10 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Error exporting report:', error);
             showMessage('An error occurred while exporting report.', 'error');
         }
-    });
+    };
+
+    exportHtmlBtn.addEventListener('click', () => exportReport('html'));
+    exportMdBtn.addEventListener('click', () => exportReport('markdown'));
 
     // Initialize Socket.IO
     const socket = io({ transports: ['polling', 'websocket'] }); // Databricks環境での安定性向上のため、ポーlingを優先

@@ -29,23 +29,24 @@ class ReportService:
             # Only display heading and direct images if the node has direct images and is not the root
             if node_name != 'root' and has_direct_images:
                 html += f"<div class=\"gallery-section\">"
-                html += f"<h2>{full_path}</h2>" # Fixed to <h2>
+                html += f"<h3>{full_path}</h3>"
 
                 if node.get('comment'):
                     html += f"<p>{node.get('comment')}</p>"
 
-                html += "<div class=\"image-grid\">";
+                html += "<div class=\"image-grid\">"
                 if node.get('images'):
                     for image in node['images']:
                         image_src = f"{base_url}/images/{gallery_name}/{image.get('full_path')}"
-                        html += f"<div class=\"image-item\"><img src=\"{image_src}\" alt=\"{image.get('filename')}\"></div>";
+                        html += f"<div class=\"image-item\"><img src=\"{image_src}\" alt=\"{image.get('filename')}\"></div>"
                 html += "</div>" # Close image-grid
                 html += "</div>" # Close gallery-section
+                html += "<hr>\n" # Add horizontal rule after each section
 
             # Recursively render children, always passing the updated path
             if node.get('children'):
                 for child in node['children']:
-                    html += render_node_html(child, level + 1, new_path_parts) # Level still increases for path building
+                    html += render_node_html(child, level + 1, new_path_parts)
             
             return html
 
@@ -55,6 +56,9 @@ class ReportService:
             for child_node in gallery_data['children']:
                 rendered_content += render_node_html(child_node, 1, [])
 
+        # Remove the last <hr> if it exists
+        if rendered_content.endswith("<hr>\n"):
+            rendered_content = rendered_content[:-5] # Remove "<hr>\n"
 
         html_template = f"""
         <!DOCTYPE html>
@@ -69,14 +73,14 @@ class ReportService:
             </style>
         </head>
         <body>
-            <h1>{gallery_name}</h1> <!-- Changed to gallery_name -->
+            <h2>{gallery_name}</h2>
+            <hr> <!-- Added horizontal rule after main title -->
             {rendered_content}
         </body>
         </html>
         """
         
-        return render_template_string(html_template) # No need to pass gallery_data, gallery_name, base_url to render_template_string
-                                                    # as content is already rendered
+        return render_template_string(html_template)
 
 
     def generate_markdown_report(self, gallery_data, gallery_name, base_url):
@@ -102,7 +106,7 @@ class ReportService:
 
             # Only display heading and direct images if the node has direct images and is not the root
             if node_name != 'root' and has_direct_images:
-                md += f"## {full_path}\n\n" # Fixed to ##
+                md += f"### {full_path}\n\n"
             
                 if node.get('comment'):
                     md += f"{node.get('comment')}\n\n"
@@ -110,15 +114,22 @@ class ReportService:
                 if node.get('images'):
                     for image in node['images']:
                         image_path = f"{base_url}/images/{gallery_name}/{image.get('full_path')}"
-                        md += f"![{image.get('filename')}]({image_path})\n"
+                        md += f"![{image.get('filename')}]({image.get('full_path')})\n"
+                md += "---\n\n" # Add Markdown horizontal rule after each section
 
             if node.get('children'):
                 for child in node['children']:
-                    md += render_node_md(child, level + 1, new_path_parts) # Level still increases for path building
+                    md += render_node_md(child, level + 1, new_path_parts)
             
             return md
 
         # Add top-level heading for Markdown report
-        markdown_content = f"# {gallery_name}\n\n" # Added top-level heading
+        markdown_content = f"## {gallery_name}\n\n"
+        markdown_content += "---\n\n" # Added horizontal rule after main title
         markdown_content += render_node_md(gallery_data)
+        
+        # Remove the last "---" if it exists
+        if markdown_content.endswith("---\n\n"):
+            markdown_content = markdown_content[:-5] # Remove "---\n\n"
+
         return markdown_content

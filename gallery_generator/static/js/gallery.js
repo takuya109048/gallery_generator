@@ -296,9 +296,16 @@ document.addEventListener('DOMContentLoaded', () => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
 
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
+                const targetElement = document.querySelector(this.getAttribute('href'));
+                if (targetElement) {
+                    const headerHeight = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-height'));
+                    const extraOffset = 20; // Add a little extra margin
+                    const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
+                    window.scrollTo({
+                        top: elementPosition - headerHeight - extraOffset,
+                        behavior: 'auto' // Ensure instant scroll
+                    });
+                }
             });
         });
 

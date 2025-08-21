@@ -197,31 +197,35 @@ document.addEventListener('DOMContentLoaded', () => {
         let tocHtmlAccumulator = '';
 
         const renderNode = (node, level, currentPath = '') => {
-            let currentSectionHtml = ''; // HTML for this node's heading and direct images
-            let nodeTocHtml = '';
-            let shouldRenderThisNodeHeading = false; // Flag to determine if this node's heading should be rendered
+            // 1. Filter this node's direct images
+            const filteredImages = (node.images || []).filter(img => {
+                return filterDate === 'all' || img.modification_date === filterDate;
+            });
+            const hasDirectImages = filteredImages.length > 0;
 
-            // Check if this node directly has images
-            const hasDirectImages = (node.images && node.images.length > 0);
-
-            // Recursively render children and collect their HTML and TOC entries
-            let childrenAccumulatedHtml = ''; // HTML from all rendered children (including their descendants)
-            let childrenAccumulatedTocHtml = ''; // TOC entries from all rendered children
+            // 2. Recursively call renderNode for children
+            let childrenAccumulatedHtml = '';
+            let childrenAccumulatedTocHtml = '';
+            let hasChildContent = false; // See if any descendant has images matching the filter
 
             if (node.children && node.children.length > 0) {
                 const newFullPath = currentPath ? `${currentPath}/${node.name}` : node.name;
                 node.children.forEach(child => {
                     const childRenderResult = renderNode(child, level + 1, newFullPath);
-                    // Children's HTML is always collected, regardless of whether their parent's heading is displayed
-                    childrenAccumulatedHtml += childRenderResult.sectionHtml; // This now includes child's own section and its children
-                    childrenAccumulatedTocHtml += childRenderResult.nodeTocHtml;
+                    if (childRenderResult.hasRenderedContent) {
+                        hasChildContent = true;
+                        childrenAccumulatedHtml += childRenderResult.sectionHtml;
+                        childrenAccumulatedTocHtml += childRenderResult.nodeTocHtml;
+                    }
                 });
             }
 
-            // Determine if this node's heading should be rendered
-            shouldRenderThisNodeHeading = hasDirectImages;
+            // 3. Decide whether to render this node's section
+            let currentSectionHtml = '';
+            let nodeTocHtml = '';
 
-            if (shouldRenderThisNodeHeading && node.name !== 'root') { // Don't create a section for the invisible root
+            // A heading is displayed if it has direct images (matching the filter)
+            if (hasDirectImages && node.name !== 'root') {
                 const headingText = currentPath ? `${currentPath}/${node.name}` : node.name;
                 const sanitizedHeadingText = encodeURIComponent(headingText).replace(/%[0-9A-Fa-f]{2}/g, '-').replace(/[^a-zA-Z0-9_-]+/g, '');
                 const uniqueHash = simpleHash(headingText); // Hash the original headingText (full path)
@@ -240,10 +244,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 currentSectionHtml += `<div class="image-grid">
 `;
-                const filteredImages = node.images.filter(img => {
-                    return filterDate === 'all' || img.modification_date === filterDate;
-                });
-
                 filteredImages.forEach(image => {
                     const imageUrl = `/images/${galleryName}/${image.full_path}`;
                     const placeholderUrl = `/static/images/placeholder.jpg`;
@@ -261,27 +261,25 @@ document.addEventListener('DOMContentLoaded', () => {
                 currentSectionHtml += `</div>`;
                 currentSectionHtml += `</div>`;
 
+                // Also create the TOC entry for this heading
                 nodeTocHtml += `<li class="level-${level}"><a href="#${headingId}">${headingText}</a>`;
-                // TOC for children should still be nested under the parent's TOC if the parent's heading is displayed
+                // If this node has children with content, their TOCs should be nested.
                 if (childrenAccumulatedTocHtml) {
                     nodeTocHtml += `<ul>${childrenAccumulatedTocHtml}</ul>`;
                 }
                 nodeTocHtml += `</li>`;
-            }
-            else {
-                // If this node's heading is not rendered, its children's TOC entries should still be passed up
-                nodeTocHtml += childrenAccumulatedTocHtml;
+            } else {
+                // If this node has no direct images, we just pass the children's TOCs up.
+                nodeTocHtml = childrenAccumulatedTocHtml;
             }
 
-            // The total section HTML returned includes this node's section (if rendered) and all its children's HTML
+            // 4. Return the results
             const totalSectionHtml = currentSectionHtml + childrenAccumulatedHtml;
 
             return {
                 sectionHtml: totalSectionHtml,
                 nodeTocHtml: nodeTocHtml,
-                // We still need a flag to tell the parent if *any* content (either this node's or its children's) was rendered
-                // This is important for the initial call in renderGallery to decide what to append to galleryHtml
-                hasRenderedContent: shouldRenderThisNodeHeading || (childrenAccumulatedHtml !== '')
+                hasRenderedContent: hasDirectImages || hasChildContent
             };
         };
 
@@ -718,9 +716,44 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Export Report
+    const filterGalleryData = (node, filterDate) => {
+        if (filterDate === 'all') {
+            return node; // Return the original node if no filter is applied
+        }
+
+        // Filter this node's direct images
+        const filteredImages = (node.images || []).filter(img => img.modification_date === filterDate);
+
+        // Recursively filter children
+        const filteredChildren = (node.children || [])
+            .map(child => filterGalleryData(child, filterDate))
+            .filter(child => child !== null); // Remove children that become null after filtering
+
+        // A node is kept if it has direct filtered images or if it has any children that were kept
+        if (filteredImages.length > 0 || filteredChildren.length > 0) {
+            // Return a new node object with the filtered data
+            return {
+                ...node,
+                images: filteredImages,
+                children: filteredChildren,
+            };
+        }
+
+        // If a node has no direct images and no children after filtering, discard it
+        return null;
+    };
+
     const exportReport = async (format) => {
         if (!['html', 'markdown'].includes(format.toLowerCase())) {
             showMessage("Invalid format. Please choose html or markdown.", 'error');
+            return;
+        }
+
+        const filterDate = dateFilter.value; // Get the current date from the filter dropdown
+        const filteredData = filterGalleryData(currentGalleryData, filterDate);
+
+        if (!filteredData) {
+            showMessage("No data to export for the selected date.", 'info');
             return;
         }
 
@@ -735,7 +768,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 },
                 body: JSON.stringify({
                     format: format.toLowerCase(),
-                    gallery_data: currentGalleryData, // This is the data being displayed
+                    gallery_data: filteredData, // Send the filtered data
                     selected_version: selectedVersionFilename // Pass the selected version filename
                 }),
             });

@@ -32,8 +32,8 @@ class ReportService:
                 html += f"<h3>{full_path}</h3>"
 
                 if node.get('comment'):
-                    html += f"<p>{node.get('comment')}</p>"
-
+                    html += f"<div class=\"comment-box\"><p>{node.get('comment')}</p></div>" # Wrapped in comment-box
+                
                 html += "<div class=\"image-grid\">"
                 if node.get('images'):
                     for image in node['images']:
@@ -70,6 +70,8 @@ class ReportService:
                 body {{ font-family: sans-serif; }}
                 .image-grid {{ display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }}
                 .image-item img {{ width: 100%; height: auto; }}
+                .comment-box {{ border: 1px solid #ccc; padding: 10px; margin-bottom: 10px; background-color: #f9f9f9; border-radius: 5px; }}
+                .comment-box p {{ margin: 0; }}
             </style>
         </head>
         <body>
@@ -109,12 +111,12 @@ class ReportService:
                 md += f"### {full_path}\n\n"
             
                 if node.get('comment'):
-                    md += f"{node.get('comment')}\n\n"
-
+                    md += f"```txt\n{node.get('comment')}\n```\n\n" # Wrapped in code block
+                
                 if node.get('images'):
                     for image in node['images']:
                         image_path = f"{base_url}/images/{gallery_name}/{image.get('full_path')}"
-                        md += f"![{image.get('filename')}]({image.get('full_path')})\n"
+                        md += f"![{image.get('filename')}]({image_path})\n"
                 md += "---\n\n" # Add Markdown horizontal rule after each section
 
             if node.get('children'):
@@ -128,7 +130,7 @@ class ReportService:
         markdown_content += "---\n\n" # Added horizontal rule after main title
         markdown_content += render_node_md(gallery_data)
         
-        # Remove the last "---" if it exists
+        # Remove the last \"---\" if it exists
         if markdown_content.endswith("---\n\n"):
             markdown_content = markdown_content[:-5] # Remove "---\n\n"
 

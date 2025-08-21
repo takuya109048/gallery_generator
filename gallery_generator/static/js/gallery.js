@@ -2,7 +2,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const galleryContainer = document.getElementById('gallery-container');
     const tocContainer = document.getElementById('toc-container');
     const dateFilter = document.getElementById('date-filter');
-    const dropArea = document.getElementById('drop-area');
     const fileElem = document.getElementById('fileElem');
     const confirmDeletionBtn = document.getElementById('confirm-deletion');
     const versionHistorySelect = document.getElementById('version-history-select');
@@ -363,39 +362,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Upload functionality
-    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-        dropArea.addEventListener(eventName, preventDefaults, false);
-    });
-
-    function preventDefaults(e) {
-        e.preventDefault();
-        e.stopPropagation();
-    }
-
-    ['dragenter', 'dragover'].forEach(eventName => {
-        dropArea.addEventListener(eventName, highlight, false);
-    });
-
-    ['dragleave', 'drop'].forEach(eventName => {
-        dropArea.addEventListener(eventName, unhighlight, false);
-    });
-
-    function highlight() {
-        dropArea.classList.add('highlight');
-    }
-
-    function unhighlight() {
-        dropArea.classList.remove('highlight');
-    }
-
-    dropArea.addEventListener('drop', handleDrop, false);
     fileElem.addEventListener('change', (e) => handleFiles(e.target.files), false);
-
-    function handleDrop(e) {
-        const dt = e.dataTransfer;
-        const files = dt.files;
-        handleFiles(files);
-    }
 
     
 

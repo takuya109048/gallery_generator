@@ -6,6 +6,7 @@
     <title>Photo Gallery</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="stylesheet" href="https://unpkg.com/viewerjs/dist/viewer.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body data-gallery-name="{{ gallery_name }}">
     <header class="app-header">
@@ -14,16 +15,12 @@
             <span class="app-logo">Photo Gallery</span>
         </div>
         <div class="header-center">
-            <div id="drop-area" class="drop-area">
-                <p>Drag and drop zip file here, or</p>
-                <input type="file" id="fileElem" accept=".zip" style="display: none;">
-                <label class="button sidebar-button" for="fileElem">Browse Files</label>
-            </div>
-            
         </div>
         <div class="header-right">
-            <button id="confirm-deletion" class="sidebar-button">Confirm Deletion</button>
-            <button id="export-report-btn" class="sidebar-button">Export Report</button>
+            <input type="file" id="fileElem" accept=".zip" style="display: none;">
+            <label class="header-icon-button" for="fileElem"><i class="fas fa-folder-open"></i></label>
+            <button id="confirm-deletion" class="header-icon-button"><i class="fas fa-times"></i></button>
+            <button id="export-report-btn" class="header-icon-button"><i class="fas fa-file-export"></i></button>
         </div>
     </header>
 

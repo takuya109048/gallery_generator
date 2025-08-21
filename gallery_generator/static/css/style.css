@@ -78,38 +78,6 @@ body {
     letter-spacing: -1px;
 }
 
-/* Header Upload Area */
-.header-center .drop-area {
-    border: 2px dashed var(--border-color);
-    padding: 8px 15px;
-    text-align: center;
-    cursor: pointer;
-    border-radius: 5px;
-    background-color: var(--tertiary-bg);
-    color: var(--secondary-text);
-    transition: border-color 0.3s, background-color 0.3s;
-    display: flex;
-    align-items: center;
-    /* flex-grow: 1; Removed */
-    justify-content: space-between; /* Changed to space-between */
-    width: 100%; /* Take full width of its parent (header-center) */
-}
-
-.header-center .drop-area p {
-    margin: 0; /* Removed margin-right */
-    font-size: 14px;
-}
-
-.header-center .drop-area .sidebar-button {
-    padding: 8px 15px;
-    font-size: 14px;
-}
-
-.header-center .drop-area.highlight {
-    border-color: var(--accent-color);
-    background-color: #e9f5ff;
-}
-
 /* Main Wrapper (Sidebar + Content) */
 .main-wrapper {
     display: flex;
@@ -191,18 +159,49 @@ body {
     color: var(--primary-text);
 }
 
-.sidebar-button {
+.header-icon-button {
     background-color: var(--accent-color);
     color: white;
     border: none;
-    padding: 10px 15px;
-    border-radius: 3px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 5px;
     font-weight: bold;
     transition: background-color 0.3s ease;
+    cursor: pointer;
+}
+
+.header-icon-button i {
+    font-size: 18px;
+}
+
+.header-icon-button:hover {
+    background-color: var(--accent-hover);
+}
+
+.header-icon-button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
 }
 
 #deletion-mode-toggle {
     min-width: 150px; /* Prevent button from resizing when text changes */
+}
+
+.sidebar-button {
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 3px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+    width: 100%;
+    text-align: center;
 }
 
 .sidebar-button:hover {

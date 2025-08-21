@@ -74,7 +74,7 @@ body {
     font-size: 22px;
     font-weight: bold;
     color: var(--primary-text);
-    text-transform: uppercase;
+    /* Removed: text-transform: uppercase; */
     letter-spacing: -1px;
 }
 
@@ -516,12 +516,18 @@ body {
 /* Image Status Styles */
 .image-item.good-image {
     border: 4px solid #7CFC00; /* Brighter green (LimeGreen) */
-    box-shadow: 0 0 5px 2px rgba(124, 252, 0, 0.7); /* Stronger, more spread-out glow */
+    box-shadow: 0 0 15px 5px rgba(124, 252, 0, 0.7); /* Stronger, more spread-out glow */
+}
+
+.image-item.bad-image {
+    /* Remove opacity from the parent container */
+    /* opacity: 0.5; */ /* REMOVED */
+    /* filter: grayscale(50%); */ /* Keep grayscale if desired, but apply to image */
 }
 
 .image-item.bad-image img {
     opacity: 0.5; /* Apply opacity directly to the image */
-    filter: grayscale(100%); /* Apply grayscale directly to the image */
+    filter: grayscale(50%); /* Apply grayscale directly to the image */
 }
 
 /* Ensure checkbox remains fully opaque */

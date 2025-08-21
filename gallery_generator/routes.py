@@ -6,6 +6,7 @@ import logging
 import io
 import os
 from mimetypes import guess_type
+from datetime import datetime # Import datetime
 
 logger = logging.getLogger(__name__)
 
@@ -210,6 +211,7 @@ def export_report(gallery_name):
     data = request.get_json()
     report_format = data.get('format')
     gallery_data = data.get('gallery_data')
+    selected_version = data.get('selected_version', 'current') # Get selected version, default to 'current'
 
     if not report_format or not gallery_data:
         return jsonify({'error': 'Missing format or gallery data'}), 400
@@ -220,16 +222,30 @@ def export_report(gallery_name):
         base_url = request.url_root.rstrip('/')
         report_content = ""
         mimetype = ""
-        download_name = ""
+        
+        # Construct the filename based on gallery_name and selected_version
+        version_suffix = ""
+        if selected_version == 'current':
+            # For current version, use current timestamp or a generic suffix
+            version_suffix = datetime.now().strftime('%Y%m%d%H%M%S') # Use current timestamp
+        elif selected_version.startswith('gallery_data_') and selected_version.endswith('.json'):
+            # Extract timestamp from backup filename: gallery_data_YYYYMMDDHHMMSS.json
+            version_suffix = selected_version.replace('gallery_data_', '').replace('.json', '')
+        else:
+            # Fallback for unexpected selected_version values
+            version_suffix = "unknown_version"
+
+        # Construct the base filename
+        base_filename = f"{gallery_name}_{version_suffix}"
 
         if report_format == 'html':
             report_content = report_service.generate_html_report(gallery_data, gallery_name, base_url)
             mimetype = 'text/html'
-            download_name = 'report.html'
+            download_name = f"{base_filename}.html"
         elif report_format == 'markdown':
             report_content = report_service.generate_markdown_report(gallery_data, gallery_name, base_url)
             mimetype = 'text/markdown'
-            download_name = 'report.md'
+            download_name = f"{base_filename}.md"
         else:
             return jsonify({'error': 'Invalid format specified'}), 400
 

@@ -726,13 +726,20 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        // Get the currently selected version from the dropdown
+        const selectedVersionFilename = versionHistorySelect.value; // e.g., "current" or "gallery_data_20250815231800.json"
+
         try {
             const response = await fetch(`/gallery/${galleryName}/export_report`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ format: format.toLowerCase(), gallery_data: currentGalleryData }),
+                body: JSON.stringify({
+                    format: format.toLowerCase(),
+                    gallery_data: currentGalleryData, // This is the data being displayed
+                    selected_version: selectedVersionFilename // Pass the selected version filename
+                }),
             });
 
             if (response.ok) {
@@ -740,10 +747,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 const disposition = response.headers.get('Content-Disposition');
                 let filename = 'report';
                 if (disposition && disposition.indexOf('attachment') !== -1) {
-                    const filenameRegex = /filename[^;=\n]*=((['"])(.*?)\2|[^;\n]*)/;
+                    // Robust regex for Content-Disposition filename parsing
+                    // Handles double-quoted, single-quoted, and unquoted filenames
+                    const filenameRegex = /filename\*?=(?:"([^"]+)"|'([^']+)'|([^;]+))/;
                     const matches = filenameRegex.exec(disposition);
-                    if (matches != null && matches[3]) {
-                        filename = matches[3];
+                    
+                    if (matches != null) {
+                        // Check which group captured the filename
+                        if (matches[1]) { // Double-quoted
+                            filename = matches[1];
+                        } else if (matches[2]) { // Single-quoted
+                            filename = matches[2];
+                        } else if (matches[3]) { // Unquoted
+                            filename = matches[3];
+                        }
+                        // Decode URI component if necessary (e.g., for UTF-8 filenames)
+                        filename = decodeURIComponent(filename.replace(/\+/g, ' ')); // Replace + with space for URL encoding
                     }
                 }
                 
@@ -762,12 +781,12 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } catch (error) {
             console.error('Error exporting report:', error);
-            showMessage('An error occurred during report export.', 'error');
+            showMessage('An error occurred while exporting report.', 'error');
         }
     });
 
     // Initialize Socket.IO
-    const socket = io({ transports: ['polling', 'websocket'] }); // Databricks環境での安定性向上のため、ポーリングを優先
+    const socket = io({ transports: ['polling', 'websocket'] }); // Databricks環境での安定性向上のため、ポーlingを優先
 
     socket.on('connect', () => {
         console.log('Connected to WebSocket');

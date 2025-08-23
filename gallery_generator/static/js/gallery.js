@@ -403,9 +403,40 @@ document.addEventListener('DOMContentLoaded', () => {
         formData.append('file', file);
 
         // Show progress bar toast
-        showProgressBarToast(0); // Initialize with 0%
+        showProgressBarToast(0);
+
+        let progressInterval = null;
+
+        const checkProgress = async () => {
+            try {
+                const response = await fetch(`/gallery/${galleryName}/upload_status`);
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.progress !== null && data.progress >= 0) {
+                        showProgressBarToast(data.progress);
+                        if (data.progress >= 100) {
+                            clearInterval(progressInterval);
+                        }
+                    } else if (data.progress === -1) { // Error case
+                        showMessage('Upload processing failed on the server.', 'error');
+                        clearInterval(progressInterval);
+                         if (progressBarToast) {
+                            progressBarToast.classList.remove('show');
+                            progressBarToast.parentNode.removeChild(progressBarToast);
+                            progressBarToast = null;
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('Error fetching upload status:', error);
+                // Don't clear interval here, as it might be a transient network issue
+            }
+        };
 
         try {
+            // Start polling for progress
+            progressInterval = setInterval(checkProgress, 1000);
+
             const response = await fetch(`/gallery/${galleryName}/upload`, {
                 method: 'POST',
                 body: formData,
@@ -414,26 +445,31 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!response.ok) {
                 const error = await response.json();
                 showMessage(`Upload failed: ${error.error}`, 'error');
-                // Hide progress bar toast on failure
                 if (progressBarToast) {
                     progressBarToast.classList.remove('show');
                     progressBarToast.parentNode.removeChild(progressBarToast);
                     progressBarToast = null;
                 }
             }
-             // On success, we don't need to do anything here.
-             // The 'gallery_updated' socket event will handle the UI update.
+            // On success, the 'gallery_updated' socket event will handle the final UI update.
+            // The progress interval will clear itself when it sees 100%.
 
         } catch (error) {
             console.error('Error uploading file:', error);
             showMessage('An error occurred during upload.', 'error');
-            // Hide progress bar toast on error
             if (progressBarToast) {
                 progressBarToast.classList.remove('show');
                 progressBarToast.parentNode.removeChild(progressBarToast);
                 progressBarToast = null;
             }
         } finally {
+            // Ensure the interval is cleared
+            setTimeout(() => {
+                 if (progressInterval) {
+                    clearInterval(progressInterval);
+                 }
+            }, 5000); // A failsafe to clear the interval after 5s post-completion/error
+            
             // Clear the file input value to allow re-uploading the same file
             fileElem.value = '';
         }

@@ -30,13 +30,18 @@ class DatabricksStorage(Storage):
         self.create_directories(os.path.dirname(file_path))
         
         api_url = self._get_api_url(file_path)
+        print(f"DEBUG: Attempting to save to API URL: {api_url}")
+        # print(f"DEBUG: Headers: {self.headers}") # Be careful with token in logs in production
         response = requests.put(
             api_url,
             headers=self.headers,
             data=data,
             params={"overwrite": "true"}
         )
+        print(f"DEBUG: Save response status code: {response.status_code}")
+        print(f"DEBUG: Save response text: {response.text}")
         response.raise_for_status()
+        print(f"DEBUG: Save successful for {file_path}")
 
     def load(self, file_path: str) -> bytes:
         """
@@ -147,13 +152,26 @@ class DatabricksStorage(Storage):
             dir_api_url = f"{self.instance}/api/2.0/fs/directories{self.volume_path}/{current_path}"
             
             # Check if directory exists before creating
+            print(f"DEBUG: Checking directory existence for: {dir_api_url}")
             check_response = requests.get(dir_api_url, headers=self.headers)
+            print(f"DEBUG: Directory check response status code: {check_response.status_code}")
+            print(f"DEBUG: Directory check response text: {check_response.text}")
+
             if check_response.status_code == 404:
+                print(f"DEBUG: Attempting to create directory: {dir_api_url}")
                 try:
                     response = requests.put(dir_api_url, headers=self.headers)
+                    print(f"DEBUG: Create directory response status code: {response.status_code}")
+                    print(f"DEBUG: Create directory response text: {response.text}")
                     response.raise_for_status()
+                    print(f"DEBUG: Directory {current_path} created successfully.")
                 except requests.exceptions.HTTPError as e:
+                    print(f"DEBUG: HTTPError during directory creation: {e}")
+                    print(f"DEBUG: Response status code: {e.response.status_code}")
+                    print(f"DEBUG: Response text: {e.response.text}")
                     # Ignore conflict errors if the directory was created by another process
                     # between our check and our put call (race condition).
                     if e.response.status_code != 409:
                         raise
+            else:
+                print(f"DEBUG: Directory {current_path} already exists or other status: {check_response.status_code}")

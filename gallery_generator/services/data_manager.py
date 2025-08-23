@@ -51,14 +51,9 @@ class DataManager:
                 old_data_bytes = self.storage.load(gallery_data_path)
                 old_data = json.loads(old_data_bytes.decode('utf-8'))
                 
-                storage_type = self.config_manager.get('storage_type')
-                if storage_type == 'local':
-                    # Use JST for local storage
-                    jst = pytz.timezone('Asia/Tokyo')
-                    timestamp = datetime.now(jst).strftime('%Y%m%d%H%M%S')
-                else:
-                    # Use UTC for other storage types (e.g., Databricks)
-                    timestamp = datetime.now(timezone.utc).strftime('%Y%m%d%H%M%S')
+                # Always use JST for backup timestamp in filename
+                jst = pytz.timezone('Asia/Tokyo')
+                timestamp = datetime.now(jst).strftime('%Y%m%d%H%M%S')
                 backup_filename = f"gallery_data_{timestamp}.json"
                 backup_filepath = os.path.join(backup_dir, backup_filename)
                 
@@ -85,14 +80,14 @@ class DataManager:
             if filename.startswith('gallery_data_') and filename.endswith('.json'):
                 try:
                     timestamp_str = filename.replace('gallery_data_', '').replace('.json', '')
-                    dt_object_utc = datetime.strptime(timestamp_str, '%Y%m%d%H%M%S').replace(tzinfo=pytz.utc)
+                    # Parse timestamp directly as JST
+                    dt_object_jst = jst.localize(datetime.strptime(timestamp_str, '%Y%m%d%H%M%S'))
 
-                    dt_object_jst = dt_object_utc.astimezone(jst)
                     display_timestamp = dt_object_jst.strftime('%Y/%m/%d %H:%M:%S JST')
 
                     backup_files.append({
                         'filename': filename,
-                        'timestamp': dt_object_utc.timestamp(),
+                        'timestamp': dt_object_jst.timestamp(), # Use JST timestamp for sorting
                         'display_timestamp': display_timestamp
                     })
                 except ValueError:

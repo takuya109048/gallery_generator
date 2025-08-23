@@ -1,6 +1,6 @@
 import json
 import os
-from datetime import datetime
+from datetime import datetime, timezone # Import timezone
 import pytz # Import pytz for timezone handling
 from gallery_generator.storage.storage import Storage # Import Storage interface
 from typing import Dict, Any
@@ -51,7 +51,7 @@ class DataManager:
                 old_data_bytes = self.storage.load(gallery_data_path)
                 old_data = json.loads(old_data_bytes.decode('utf-8'))
                 
-                timestamp = datetime.utcnow().strftime('%Y%m%d%H%M%S')
+                timestamp = datetime.now(timezone.utc).strftime('%Y%m%d%H%M%S')
                 backup_filename = f"gallery_data_{timestamp}.json"
                 backup_filepath = os.path.join(backup_dir, backup_filename)
                 

@@ -112,11 +112,23 @@ class DatabricksStorage(Storage):
 
     def exists(self, file_path: str) -> bool:
         """
-        Checks if a file exists in the Databricks Volume.
+        Checks if a file or directory exists in the Databricks Volume.
         """
-        api_url = self._get_api_url(file_path)
-        response = requests.get(api_url, headers=self.headers)
-        return response.status_code == 200
+        safe_path = file_path.replace("\\", "/")
+        
+        # Check for file existence
+        file_api_url = f"{self.instance}/api/2.0/fs/files{self.volume_path}/{safe_path}"
+        file_response = requests.get(file_api_url, headers=self.headers)
+        if file_response.status_code == 200:
+            return True
+
+        # Check for directory existence
+        dir_api_url = f"{self.instance}/api/2.0/fs/directories{self.volume_path}/{safe_path}"
+        dir_response = requests.get(dir_api_url, headers=self.headers)
+        if dir_response.status_code == 200:
+            return True
+            
+        return False
 
     def create_directories(self, directory_path: str):
         """

@@ -1,3 +1,4 @@
+import os
 from flask import Flask
 from flask_socketio import SocketIO
 from gallery_generator.config_manager import config_manager
@@ -21,12 +22,15 @@ def create_app(environ=None, start_response=None):
     storage_type = config_manager.get('storage_type')
     if storage_type == 'databricks':
         storage = DatabricksStorage()
+        data_manager_base_dir = '' # Empty string for Databricks, as volume_path already includes the base
     else: # Default to local
-        storage = LocalStorage()
+        local_gallery_data_path = os.path.join(os.path.dirname(app.root_path), 'gallery_data')
+        storage = LocalStorage(local_gallery_data_path)
+        data_manager_base_dir = '' # LocalStorage handles the absolute path
     
     # Make storage and data_manager accessible
     app.storage = storage
-    app.data_manager = DataManager(app.root_path, config_manager)
+    app.data_manager = DataManager(data_manager_base_dir, config_manager, app.storage)
 
     # Set a secret key for session management
     app.config['SECRET_KEY'] = 'a_very_secret_key_that_should_be_in_env_or_config' # Replace with a strong, random key in production

@@ -62,12 +62,53 @@ class DatabricksStorage(Storage):
         Lists files in a directory within the Databricks Volume.
         """
         safe_dir_path = directory_path.replace("\\", "/")
-        api_url = f"{self.instance}/api/2.0/fs/directories{self.volume_path}/{safe_dir_path}"
+        # Construct the full path including the volume path
+        full_volume_path = f"{self.volume_path}/{safe_dir_path}"
+        
+        # The API endpoint for listing contents of a directory in Unity Catalog Volumes
+        # is typically /api/2.0/fs/list or /api/2.0/unity-catalog/volumes/{volume_path}/files
+        # Given the current usage of /api/2.0/fs/directories, let's assume it's correct
+        # for listing contents, but the response parsing might need adjustment.
+        
+        # The documentation for GET /api/2.0/fs/directories/{path} returns FileInfo objects
+        # which have a 'path' field.
+        
+        api_url = f"{self.instance}/api/2.0/fs/directories{full_volume_path}"
         response = requests.get(api_url, headers=self.headers)
+        
         if response.status_code == 404:
             return [] # Directory not found, return empty list
+        
         response.raise_for_status()
-        return [item['path'].split('/')[-1] for item in response.json().get('files', [])]
+        
+        # The response for /api/2.0/fs/directories is a list of FileInfo objects.
+        # Each FileInfo object has a 'path' field which is the full path.
+        # We need to extract just the filename.
+        
+        # Example response:
+        # {
+        #   "files": [
+        #     {
+        #       "path": "/Volumes/catalog/schema/volume/dir/file1.txt",
+        #       "is_directory": false,
+        #       "file_size": 100,
+        #       "modification_time": 1678886400000
+        #     },
+        #     {
+        #       "path": "/Volumes/catalog/schema/volume/dir/subdir",
+        #       "is_directory": true
+        #     }
+        #   ]
+        # }
+        
+        # We only want files, not directories, and only their names.
+        files_in_dir = []
+        for item in response.json().get('files', []):
+            if not item.get('is_directory', False): # Only include files
+                # Extract filename from the full path
+                filename = os.path.basename(item['path'])
+                files_in_dir.append(filename)
+        return files_in_dir
 
     def exists(self, file_path: str) -> bool:
         """

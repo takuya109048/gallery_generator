@@ -6,7 +6,7 @@ from gallery_generator.storage.local_storage import LocalStorage
 from gallery_generator.storage.databricks_storage import DatabricksStorage
 from gallery_generator.services.data_manager import DataManager
 
-socketio = SocketIO(async_mode='gevent', message_queue='redis://') # Define socketio globally
+socketio = SocketIO(async_mode='gevent') # Define socketio globally
 
 def create_app(environ=None, start_response=None):
     app = Flask(__name__)

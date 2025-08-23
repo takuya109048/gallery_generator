@@ -24,9 +24,11 @@ class UploadService:
     def process_zip_file(self, zip_file_stream, gallery_name):
         import concurrent.futures
         import threading
+        import time
+        from ..config_manager import config_manager
 
         gallery_data = {"name": "root", "images": [], "comment": "", "children": []}
-        UploadService._upload_progress[gallery_name] = 0
+        UploadService._upload_progress[gallery_name] = None # Set to None initially
 
         try:
             with zipfile.ZipFile(zip_file_stream, 'r') as zip_ref:
@@ -36,6 +38,9 @@ class UploadService:
                     logger.warning("No processable image files found in the zip.")
                     UploadService._upload_progress[gallery_name] = 100
                     return gallery_data
+
+                # Set progress to 0 once we know there are files to process
+                UploadService._upload_progress[gallery_name] = 0
 
                 processed_files = 0
                 progress_lock = threading.Lock()
@@ -50,47 +55,56 @@ class UploadService:
                             self.socketio.emit('upload_progress', {'progress': progress})
                             self.socketio.sleep(0.01)
 
-                # Collect all file data first to avoid issues with zip_ref context
+                def _upload_with_retry(file_path, data, max_retries=3, initial_delay=1):
+                    retries = 0
+                    delay = initial_delay
+                    while retries < max_retries:
+                        try:
+                            self.storage.save(file_path, data)
+                            return True # Success
+                        except Exception as e:
+                            logger.warning(f"Upload failed for {file_path} (attempt {retries + 1}/{max_retries}): {e}")
+                            retries += 1
+                            if retries < max_retries:
+                                time.sleep(delay)
+                                delay *= 2 # Exponential backoff
+                            else:
+                                logger.error(f"Upload failed for {file_path} after {max_retries} attempts.")
+                                return False # Failure
+
                 files_to_upload = []
                 for member in file_members:
                     original_filename = os.path.basename(member.filename)
-                    if not original_filename:
-                        continue
+                    if not original_filename: continue
                     with zip_ref.open(member) as file_in_zip:
                         file_content = file_in_zip.read()
-                    
                     mod_date = datetime(*member.date_time).strftime('%Y-%m-%d')
                     hashed_filename = self._generate_hashed_filename(original_filename, mod_date)
                     zip_internal_path = os.path.dirname(member.filename).replace('\\', '/')
                     storage_path = f"{gallery_name}/{hashed_filename}"
-
                     files_to_upload.append({
-                        'storage_path': storage_path,
-                        'file_content': file_content,
-                        'zip_internal_path': zip_internal_path,
-                        'hashed_filename': hashed_filename,
+                        'storage_path': storage_path, 'file_content': file_content,
+                        'zip_internal_path': zip_internal_path, 'hashed_filename': hashed_filename,
                         'mod_date': mod_date
                     })
 
-                # Use ThreadPoolExecutor to upload files in parallel
-                # Adjust max_workers based on typical API limits and environment capabilities
-                with concurrent.futures.ThreadPoolExecutor(max_workers=20) as executor:
-                    future_to_file = {executor.submit(self.storage.save, file['storage_path'], file['file_content']): file for file in files_to_upload}
+                max_workers = config_manager.get('MAX_UPLOAD_WORKERS', 8)
+                with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
+                    future_to_file = {executor.submit(_upload_with_retry, file['storage_path'], file['file_content']): file for file in files_to_upload}
                     
+                    successful_uploads = []
                     for future in concurrent.futures.as_completed(future_to_file):
                         file_data = future_to_file[future]
                         try:
-                            future.result()  # Raise exception if upload failed
-                            # The node manipulation needs to be thread-safe if done here
-                            # It's safer to do it after all uploads are complete.
+                            was_successful = future.result()
+                            if was_successful:
+                                successful_uploads.append(file_data)
                         except Exception as exc:
-                            logger.error(f"Error uploading {file_data['hashed_filename']}: {exc}")
-                            # Optionally, handle failed uploads
-                        else:
+                            logger.error(f"An unexpected error occurred during the upload of {file_data['hashed_filename']}: {exc}")
+                        finally:
                             _update_progress()
 
-                # Now that all files are uploaded, build the gallery_data structure (this is safer)
-                for file_data in files_to_upload:
+                for file_data in successful_uploads:
                     node = self._get_or_create_node(gallery_data, file_data['zip_internal_path'])
                     node['images'].append({
                         "filename": file_data['hashed_filename'],

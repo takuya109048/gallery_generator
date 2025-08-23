@@ -709,7 +709,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 versions.forEach(version => {
                     const option = document.createElement('option');
                     option.value = version.filename;
-                    option.textContent = `${version.filename} (${new Date(version.timestamp * 1000).toLocaleString()})`;
+                    option.textContent = `${version.filename} (${version.display_timestamp})`;
                     versionHistorySelect.appendChild(option);
                 });
             }

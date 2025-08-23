@@ -79,9 +79,13 @@ class DatabricksStorage(Storage):
         # which have a 'path' field.
         
         api_url = f"{self.instance}/api/2.0/fs/directories{full_volume_path}"
+        print(f"DEBUG: list_files API URL: {api_url}")
         response = requests.get(api_url, headers=self.headers)
+        print(f"DEBUG: list_files response status code: {response.status_code}")
+        print(f"DEBUG: list_files response text: {response.text}")
         
         if response.status_code == 404:
+            print(f"DEBUG: Directory {directory_path} not found.")
             return [] # Directory not found, return empty list
         
         response.raise_for_status()
@@ -113,6 +117,7 @@ class DatabricksStorage(Storage):
                 # Extract filename from the full path
                 filename = os.path.basename(item['path'])
                 files_in_dir.append(filename)
+        print(f"DEBUG: Files found in {directory_path}: {files_in_dir}")
         return files_in_dir
 
     def exists(self, file_path: str) -> bool:

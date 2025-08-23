@@ -28,7 +28,7 @@ def create_gallery():
 
 @main.route('/gallery/<gallery_name>')
 def index(gallery_name):
-    gallery_data = current_app.data_manager.read_gallery_data(gallery_name)
+    gallery_data = current_app.data_manager.load_gallery_data()
     return render_template('index.html', gallery_data=gallery_data, gallery_name=gallery_name)
 
 @main.route('/gallery/<gallery_name>/upload', methods=['POST'])
@@ -67,7 +67,7 @@ def _process_upload_in_background(app, file_content, original_filename, gallery_
         new_gallery_data = upload_service.process_zip_file(file_stream, gallery_name)
         
         if new_gallery_data:
-            existing_data = app.data_manager.read_gallery_data(gallery_name)
+            existing_data = app.data_manager.load_gallery_data()
             
             def merge_data(existing, new):
                 existing_image_paths = {img['full_path'] for img in existing.get('images', [])}
@@ -88,8 +88,8 @@ def _process_upload_in_background(app, file_content, original_filename, gallery_
                 merge_data(existing_data, new_gallery_data)
                 final_gallery_data = existing_data
 
-            app.data_manager._sort_gallery_data(final_gallery_data)
-            app.data_manager.write_gallery_data(final_gallery_data, gallery_name)
+            
+            app.data_manager.save_gallery_data(final_gallery_data)
             app.socketio.emit('gallery_updated', {'message': 'Upload complete and gallery updated!', 'gallery_data': final_gallery_data})
         else:
             # Handle failure in background task
@@ -111,7 +111,7 @@ def delete_items(gallery_name):
 
     delete_service = DeleteService(current_app.storage, current_app.data_manager)
     if delete_service.delete_items(paths_to_delete, gallery_name):
-        updated_gallery_data = current_app.data_manager.read_gallery_data(gallery_name)
+        updated_gallery_data = current_app.data_manager.load_gallery_data()
         current_app.socketio.emit('gallery_updated', updated_gallery_data)
         return jsonify({'message': 'Items deleted successfully'}), 200
     else:
@@ -126,8 +126,8 @@ def update_comment(gallery_name):
     if path is None:
         return jsonify({'error': 'Path not specified for comment update'}), 400
 
-    if current_app.data_manager.update_comment(path, comment, gallery_name):
-        updated_gallery_data = current_app.data_manager.read_gallery_data(gallery_name)
+    if current_app.data_manager.update_comment(path, comment):
+        updated_gallery_data = current_app.data_manager.load_gallery_data()
         current_app.socketio.emit('gallery_updated', updated_gallery_data)
         return jsonify({'message': 'Comment updated successfully'}), 200
     else:
@@ -145,8 +145,8 @@ def update_image_status(gallery_name):
     if status not in ['good', 'bad', 'neutral']:
         return jsonify({'error': 'Invalid status'}), 400
 
-    if current_app.data_manager.update_image_status(image_paths, status, gallery_name):
-        updated_gallery_data = current_app.data_manager.read_gallery_data(gallery_name)
+    if current_app.data_manager.update_image_status(image_paths, status):
+        updated_gallery_data = current_app.data_manager.load_gallery_data()
         current_app.socketio.emit('gallery_updated', {'message': f'Image status updated to {status}', 'gallery_data': updated_gallery_data})
         return jsonify({'message': 'Image status updated successfully'}), 200
     else:
@@ -171,23 +171,26 @@ def serve_image(gallery_name, image_path):
 
 @main.route('/gallery/<gallery_name>/api/gallery_data')
 def get_gallery_data(gallery_name):
-    gallery_data = current_app.data_manager.read_gallery_data(gallery_name)
+    gallery_data = current_app.data_manager.load_gallery_data()
     if gallery_data:
         return jsonify(gallery_data)
     return jsonify({'error': 'Gallery data not found'}), 404
 
 @main.route('/gallery/<gallery_name>/api/versions')
 def list_versions(gallery_name):
-    versions = current_app.data_manager.list_backups(gallery_name)
+    versions = current_app.data_manager.get_backup_versions()
     # Timestamps need to be serializable
-    for version in versions:
-        if version.get('timestamp'):
-            version['timestamp'] = version['timestamp'].isoformat()
+    # The 'timestamp' field is already a float (Unix timestamp), which is serializable.
+    # The 'display_timestamp' field is already a string.
+    # No need to call isoformat() on a float.
+    # for version in versions:
+    #     if version.get('timestamp'):
+    #         version['timestamp'] = version['timestamp'].isoformat()
     return jsonify(versions)
 
 @main.route('/gallery/<gallery_name>/api/version/<filename>')
 def get_version(gallery_name, filename):
-    version_data = current_app.data_manager.read_backup(filename, gallery_name)
+    version_data = current_app.data_manager.read_backup(filename)
     if version_data:
         return jsonify(version_data)
     return jsonify({'error': 'Version not found'}), 404
@@ -199,8 +202,8 @@ def revert_version(gallery_name):
     if not filename:
         return jsonify({'error': 'Filename not specified'}), 400
 
-    if current_app.data_manager.revert_to_version(filename, gallery_name):
-        updated_gallery_data = current_app.data_manager.read_gallery_data(gallery_name)
+    if current_app.data_manager.revert_to_version(filename):
+        updated_gallery_data = current_app.data_manager.load_gallery_data()
         current_app.socketio.emit('gallery_updated', updated_gallery_data)
         return jsonify({'message': 'Successfully reverted'}), 200
     else:

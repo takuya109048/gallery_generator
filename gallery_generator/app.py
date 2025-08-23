@@ -26,7 +26,7 @@ def create_app(environ=None, start_response=None):
     
     # Make storage and data_manager accessible
     app.storage = storage
-    app.data_manager = DataManager(storage)
+    app.data_manager = DataManager(app.root_path, config_manager)
 
     # Set a secret key for session management
     app.config['SECRET_KEY'] = 'a_very_secret_key_that_should_be_in_env_or_config' # Replace with a strong, random key in production

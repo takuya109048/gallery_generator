@@ -1,0 +1,485 @@
+{
+    "name": "root",
+    "images": [],
+    "comment": "",
+    "children": [
+        {
+            "name": "あaaaaaaaaaaaaaaaaaああ",
+            "full_path": "あaaaaaaaaaaaaaaaaaああ",
+            "images": [],
+            "comment": "",
+            "children": [
+                {
+                    "name": "優花",
+                    "full_path": "あaaaaaaaaaaaaaaaaaああ/優花",
+                    "images": [
+                        {
+                            "filename": "IMG_20240816_182241720_HDR_caaad266a40acca8d5095f7966534417.jpg",
+                            "modification_date": "2024-08-24",
+                            "full_path": "IMG_20240816_182241720_HDR_caaad266a40acca8d5095f7966534417.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240821_194830957_HDR_22d93349bd0bab16073247d7b9636041.jpg",
+                            "modification_date": "2024-08-24",
+                            "full_path": "IMG_20240821_194830957_HDR_22d93349bd0bab16073247d7b9636041.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240812_162847633_870bbee193ce68650b4982ce913ba449.jpg",
+                            "modification_date": "2024-08-24",
+                            "full_path": "IMG_20240812_162847633_870bbee193ce68650b4982ce913ba449.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240820_183153801_HDR_38da4caef772fc79b2f735ec1f782647.jpg",
+                            "modification_date": "2024-08-24",
+                            "full_path": "IMG_20240820_183153801_HDR_38da4caef772fc79b2f735ec1f782647.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240818_194902832_HDR_4c422b38c8a7703113ab2b42b0d00b15.jpg",
+                            "modification_date": "2024-08-24",
+                            "full_path": "IMG_20240818_194902832_HDR_4c422b38c8a7703113ab2b42b0d00b15.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240824_180721479_HDR_16ecd2a0d2e1c7e0b910d32fd6706c24.jpg",
+                            "modification_date": "2024-08-24",
+                            "full_path": "IMG_20240824_180721479_HDR_16ecd2a0d2e1c7e0b910d32fd6706c24.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240824_182200380_HDR_f5a097bafdfb89dd257a80ea86c28745.jpg",
+                            "modification_date": "2024-08-24",
+                            "full_path": "IMG_20240824_182200380_HDR_f5a097bafdfb89dd257a80ea86c28745.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240814_162409354_HDR_85b45a13e41a82ac1c71d60d908e480c.jpg",
+                            "modification_date": "2024-08-24",
+                            "full_path": "IMG_20240814_162409354_HDR_85b45a13e41a82ac1c71d60d908e480c.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240812_173248249_HDR_bcd78a11461b1af2d210ac45f04831f5.jpg",
+                            "modification_date": "2024-08-24",
+                            "full_path": "IMG_20240812_173248249_HDR_bcd78a11461b1af2d210ac45f04831f5.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240816_181933937_HDR_f9d7b28f87c474c59fd5e11982a81e07.jpg",
+                            "modification_date": "2024-08-24",
+                            "full_path": "IMG_20240816_181933937_HDR_f9d7b28f87c474c59fd5e11982a81e07.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240812_151909313_HDR_816f76ab4db730867031321527e11f34.jpg",
+                            "modification_date": "2024-08-24",
+                            "full_path": "IMG_20240812_151909313_HDR_816f76ab4db730867031321527e11f34.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240816_182557243_HDR_88ec65b85188d2321f3ebdec2fd5476a.jpg",
+                            "modification_date": "2024-08-24",
+                            "full_path": "IMG_20240816_182557243_HDR_88ec65b85188d2321f3ebdec2fd5476a.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240820_184200478_HDR_281bab6c66be55188d664548768e13ef.jpg",
+                            "modification_date": "2024-08-24",
+                            "full_path": "IMG_20240820_184200478_HDR_281bab6c66be55188d664548768e13ef.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240816_182549255_HDR_03797dcf871057ee494b6d832161a76a.jpg",
+                            "modification_date": "2024-08-24",
+                            "full_path": "IMG_20240816_182549255_HDR_03797dcf871057ee494b6d832161a76a.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240815_184720338_HDR_11274a329f1c5ad23c312814cae1f983.jpg",
+                            "modification_date": "2024-08-24",
+                            "full_path": "IMG_20240815_184720338_HDR_11274a329f1c5ad23c312814cae1f983.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240818_194849951_HDR_5c08cf93710d8055e8761dd00f318c13.jpg",
+                            "modification_date": "2024-08-24",
+                            "full_path": "IMG_20240818_194849951_HDR_5c08cf93710d8055e8761dd00f318c13.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240812_151920500_HDR_773b13b9f18d42e0ae7951c36fe0c278.jpg",
+                            "modification_date": "2024-08-24",
+                            "full_path": "IMG_20240812_151920500_HDR_773b13b9f18d42e0ae7951c36fe0c278.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240818_194921445_HDR_800204e0d7631f778e4ee31ccd9e7518.jpg",
+                            "modification_date": "2024-08-24",
+                            "full_path": "IMG_20240818_194921445_HDR_800204e0d7631f778e4ee31ccd9e7518.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240822_183759671_HDR_21edca70930154540ba8d0f2780b279c.jpg",
+                            "modification_date": "2024-08-24",
+                            "full_path": "IMG_20240822_183759671_HDR_21edca70930154540ba8d0f2780b279c.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240813_183750169_HDR_71bb22d1b9413054df95105af3308ada.jpg",
+                            "modification_date": "2024-08-24",
+                            "full_path": "IMG_20240813_183750169_HDR_71bb22d1b9413054df95105af3308ada.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240819_184436053_HDR_1307e2a6d8fd00c648a02ed08a2c045a.jpg",
+                            "modification_date": "2024-08-24",
+                            "full_path": "IMG_20240819_184436053_HDR_1307e2a6d8fd00c648a02ed08a2c045a.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240812_162950311_HDR_ca4805131df2ca3d4d5d59c0f255f502.jpg",
+                            "modification_date": "2024-08-24",
+                            "full_path": "IMG_20240812_162950311_HDR_ca4805131df2ca3d4d5d59c0f255f502.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240816_181922129_HDR_b35a668b0329eb4bcb306e08a5417b4b.jpg",
+                            "modification_date": "2024-08-24",
+                            "full_path": "IMG_20240816_181922129_HDR_b35a668b0329eb4bcb306e08a5417b4b.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240812_173259495_HDR_1b97ebeaa2e98ca4823619b8d2330b49.jpg",
+                            "modification_date": "2024-08-24",
+                            "full_path": "IMG_20240812_173259495_HDR_1b97ebeaa2e98ca4823619b8d2330b49.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240820_183141649_HDR_3fef6cb1b07f1fd6a621c5676d299ea0.jpg",
+                            "modification_date": "2024-08-24",
+                            "full_path": "IMG_20240820_183141649_HDR_3fef6cb1b07f1fd6a621c5676d299ea0.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240819_162736996_HDR_4f1aee26697f663cece8343e79e7a1b0.jpg",
+                            "modification_date": "2024-08-24",
+                            "full_path": "IMG_20240819_162736996_HDR_4f1aee26697f663cece8343e79e7a1b0.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240818_194910612_HDR_b215e25f096572b2e61f307378c0ce9b.jpg",
+                            "modification_date": "2024-08-24",
+                            "full_path": "IMG_20240818_194910612_HDR_b215e25f096572b2e61f307378c0ce9b.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240824_180734597_HDR_f33ac682538e24b5cd621fa3922e1aa9.jpg",
+                            "modification_date": "2024-08-24",
+                            "full_path": "IMG_20240824_180734597_HDR_f33ac682538e24b5cd621fa3922e1aa9.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240822_183804924_HDR_ec63685ca6c26fa8a0c85fda2338d1d6.jpg",
+                            "modification_date": "2024-08-24",
+                            "full_path": "IMG_20240822_183804924_HDR_ec63685ca6c26fa8a0c85fda2338d1d6.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240824_182231391_HDR_8c9af03a2b5ebbccfd80a16aeb52637d.jpg",
+                            "modification_date": "2024-08-24",
+                            "full_path": "IMG_20240824_182231391_HDR_8c9af03a2b5ebbccfd80a16aeb52637d.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240820_183130279_HDR_b30777b45475e67bb8ef6b4379f4f497.jpg",
+                            "modification_date": "2024-08-24",
+                            "full_path": "IMG_20240820_183130279_HDR_b30777b45475e67bb8ef6b4379f4f497.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240821_194705390_HDR_91720ce835452f60f90a584439b70c7d.jpg",
+                            "modification_date": "2024-08-24",
+                            "full_path": "IMG_20240821_194705390_HDR_91720ce835452f60f90a584439b70c7d.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240816_182643936_HDR_89570080dce1a712a7a954255f46267f.jpg",
+                            "modification_date": "2024-08-25",
+                            "full_path": "IMG_20240816_182643936_HDR_89570080dce1a712a7a954255f46267f.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240812_162849869_29de9f99c60d07f341dc3d5cfb64e3ed.jpg",
+                            "modification_date": "2024-08-25",
+                            "full_path": "IMG_20240812_162849869_29de9f99c60d07f341dc3d5cfb64e3ed.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240814_183520547_HDR~2_c88de63a895d8ac8cf48e4f89e86ffb5.jpg",
+                            "modification_date": "2024-08-24",
+                            "full_path": "IMG_20240814_183520547_HDR~2_c88de63a895d8ac8cf48e4f89e86ffb5.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240821_194809816_HDR_b116ea01ddfb5b7fc7cdc0c4c9433d36.jpg",
+                            "modification_date": "2024-08-24",
+                            "full_path": "IMG_20240821_194809816_HDR_b116ea01ddfb5b7fc7cdc0c4c9433d36.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240819_184509611_HDR_5eefa3688f997a85d6703a9ccf3b6feb.jpg",
+                            "modification_date": "2024-08-24",
+                            "full_path": "IMG_20240819_184509611_HDR_5eefa3688f997a85d6703a9ccf3b6feb.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240816_181845288_759cc8e33b3e289879b2f1d98fe67c20.jpg",
+                            "modification_date": "2024-08-24",
+                            "full_path": "IMG_20240816_181845288_759cc8e33b3e289879b2f1d98fe67c20.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240818_135448601_HDR_6f2bdec67abfcb333e91825218523639.jpg",
+                            "modification_date": "2024-08-24",
+                            "full_path": "IMG_20240818_135448601_HDR_6f2bdec67abfcb333e91825218523639.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240816_181958625_HDR_c977ef56d4498223fa11b7b2a49bbc5a.jpg",
+                            "modification_date": "2024-08-24",
+                            "full_path": "IMG_20240816_181958625_HDR_c977ef56d4498223fa11b7b2a49bbc5a.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240819_162930659_HDR_e0e8c32912be171167fe4a9cf5fe25f8.jpg",
+                            "modification_date": "2024-08-24",
+                            "full_path": "IMG_20240819_162930659_HDR_e0e8c32912be171167fe4a9cf5fe25f8.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240819_162734244_HDR_769d4142fa8a2d0b683fb864c7a7ab3b.jpg",
+                            "modification_date": "2024-08-24",
+                            "full_path": "IMG_20240819_162734244_HDR_769d4142fa8a2d0b683fb864c7a7ab3b.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240817_180233916_HDR_dc96d64129e937baedf85eb7ef929bd5.jpg",
+                            "modification_date": "2024-08-24",
+                            "full_path": "IMG_20240817_180233916_HDR_dc96d64129e937baedf85eb7ef929bd5.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240816_182628809_HDR_c02f1b78b3b184007f58b9998bc3789f.jpg",
+                            "modification_date": "2024-08-25",
+                            "full_path": "IMG_20240816_182628809_HDR_c02f1b78b3b184007f58b9998bc3789f.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240822_183758696_HDR_a5b4ce926f6c552562d4f4aa8ee9fcf4.jpg",
+                            "modification_date": "2024-08-24",
+                            "full_path": "IMG_20240822_183758696_HDR_a5b4ce926f6c552562d4f4aa8ee9fcf4.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240821_194828480_HDR_1d295052843de882c4b577aa572fbe4e.jpg",
+                            "modification_date": "2024-08-24",
+                            "full_path": "IMG_20240821_194828480_HDR_1d295052843de882c4b577aa572fbe4e.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240818_194858988_HDR_3589845ab6cfb12014775e3ec6d247f0.jpg",
+                            "modification_date": "2024-08-24",
+                            "full_path": "IMG_20240818_194858988_HDR_3589845ab6cfb12014775e3ec6d247f0.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240812_151928634_HDR_39aea7100538bcd9787b0f5fde5b82b6.jpg",
+                            "modification_date": "2024-08-24",
+                            "full_path": "IMG_20240812_151928634_HDR_39aea7100538bcd9787b0f5fde5b82b6.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240812_151816915_HDR_2fa86fe6b60ec18ae55431d3cd88e004.jpg",
+                            "modification_date": "2024-08-24",
+                            "full_path": "IMG_20240812_151816915_HDR_2fa86fe6b60ec18ae55431d3cd88e004.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240820_183003243_HDR_5eb0cb71bcc24cfac5e8f1d3762d1ea6.jpg",
+                            "modification_date": "2024-08-24",
+                            "full_path": "IMG_20240820_183003243_HDR_5eb0cb71bcc24cfac5e8f1d3762d1ea6.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240817_184510835_HDR_5dbce349b8e39dd7de264b23689c74f5.jpg",
+                            "modification_date": "2024-08-24",
+                            "full_path": "IMG_20240817_184510835_HDR_5dbce349b8e39dd7de264b23689c74f5.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240816_181843697_fb06ffc9ed69ba69e188cd97bf38b798.jpg",
+                            "modification_date": "2024-08-24",
+                            "full_path": "IMG_20240816_181843697_fb06ffc9ed69ba69e188cd97bf38b798.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240821_194815137_HDR_dd03d4a74953092e37332e8d5621a418.jpg",
+                            "modification_date": "2024-08-24",
+                            "full_path": "IMG_20240821_194815137_HDR_dd03d4a74953092e37332e8d5621a418.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240816_182114798_HDR_12a5ed38e8632b44442ba6f64fb2d2a0.jpg",
+                            "modification_date": "2024-08-24",
+                            "full_path": "IMG_20240816_182114798_HDR_12a5ed38e8632b44442ba6f64fb2d2a0.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240812_152020800_HDR_0d47a7ee6c0f487c519b7a53afd6cea6.jpg",
+                            "modification_date": "2024-08-24",
+                            "full_path": "IMG_20240812_152020800_HDR_0d47a7ee6c0f487c519b7a53afd6cea6.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240818_194855142_HDR_cc164d900c2a5547c059c4af70f4a509.jpg",
+                            "modification_date": "2024-08-24",
+                            "full_path": "IMG_20240818_194855142_HDR_cc164d900c2a5547c059c4af70f4a509.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240814_162422591_HDR_29da10d8ef3d465009e01cda3b1ba118.jpg",
+                            "modification_date": "2024-08-24",
+                            "full_path": "IMG_20240814_162422591_HDR_29da10d8ef3d465009e01cda3b1ba118.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240812_151829915_HDR_fdc31cc8161ce1aac06e982f3b82b61c.jpg",
+                            "modification_date": "2024-08-24",
+                            "full_path": "IMG_20240812_151829915_HDR_fdc31cc8161ce1aac06e982f3b82b61c.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240823_143008599_HDR_a09651c41118764b10d740afc1923bd0.jpg",
+                            "modification_date": "2024-08-24",
+                            "full_path": "IMG_20240823_143008599_HDR_a09651c41118764b10d740afc1923bd0.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240816_181845752_26b482c930fb460ccb24d45bf1b3e456.jpg",
+                            "modification_date": "2024-08-24",
+                            "full_path": "IMG_20240816_181845752_26b482c930fb460ccb24d45bf1b3e456.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240824_184510492_HDR_1c62fb4f2998d7a31586282ea29ea65c.jpg",
+                            "modification_date": "2024-08-24",
+                            "full_path": "IMG_20240824_184510492_HDR_1c62fb4f2998d7a31586282ea29ea65c.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240816_181846238_649b593ad1bc87856e2932cfb6f12d65.jpg",
+                            "modification_date": "2024-08-24",
+                            "full_path": "IMG_20240816_181846238_649b593ad1bc87856e2932cfb6f12d65.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240812_152023935_HDR_63b522a3ec2376b6ee743394542d05e0.jpg",
+                            "modification_date": "2024-08-25",
+                            "full_path": "IMG_20240812_152023935_HDR_63b522a3ec2376b6ee743394542d05e0.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240818_194908028_HDR_1e76556d1e3240b87fd1102bac356e0a.jpg",
+                            "modification_date": "2024-08-24",
+                            "full_path": "IMG_20240818_194908028_HDR_1e76556d1e3240b87fd1102bac356e0a.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240823_143012619_HDR_f9c38fe14266493bb605f66c9e3712c1.jpg",
+                            "modification_date": "2024-08-24",
+                            "full_path": "IMG_20240823_143012619_HDR_f9c38fe14266493bb605f66c9e3712c1.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240820_183111066_HDR_86dae337648e00891f5f38cdc535ad48.jpg",
+                            "modification_date": "2024-08-24",
+                            "full_path": "IMG_20240820_183111066_HDR_86dae337648e00891f5f38cdc535ad48.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240823_143036733_HDR_cc76eee5f8ba6b298da6ee29a6440d22.jpg",
+                            "modification_date": "2024-08-24",
+                            "full_path": "IMG_20240823_143036733_HDR_cc76eee5f8ba6b298da6ee29a6440d22.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240821_184435277_BURST000_COVER_4ad4d0cbfd007bedf0641a0fbbda5207.jpg",
+                            "modification_date": "2024-08-24",
+                            "full_path": "IMG_20240821_184435277_BURST000_COVER_4ad4d0cbfd007bedf0641a0fbbda5207.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240820_183112288_HDR_d473850a80ed234247dcf33f709ffb15.jpg",
+                            "modification_date": "2024-08-24",
+                            "full_path": "IMG_20240820_183112288_HDR_d473850a80ed234247dcf33f709ffb15.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240814_162429292_HDR_7a79a5ef6aab9b9c85e1925c04b3355c.jpg",
+                            "modification_date": "2024-08-24",
+                            "full_path": "IMG_20240814_162429292_HDR_7a79a5ef6aab9b9c85e1925c04b3355c.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240814_162418214_HDR_0458edefc53f5a6ff3fd23f2850bbb2f.jpg",
+                            "modification_date": "2024-08-24",
+                            "full_path": "IMG_20240814_162418214_HDR_0458edefc53f5a6ff3fd23f2850bbb2f.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240821_184450254_HDR_3ff5cda1ab5a998ffabe10b1a85b88d2.jpg",
+                            "modification_date": "2024-08-24",
+                            "full_path": "IMG_20240821_184450254_HDR_3ff5cda1ab5a998ffabe10b1a85b88d2.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240823_184505023_HDR_f9b8ca63cf2c85a11ef5ee8cd72c0a5f.jpg",
+                            "modification_date": "2024-08-24",
+                            "full_path": "IMG_20240823_184505023_HDR_f9b8ca63cf2c85a11ef5ee8cd72c0a5f.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240819_162918119_HDR_ac3f1c5101c74f0af466f98053328b2a.jpg",
+                            "modification_date": "2024-08-24",
+                            "full_path": "IMG_20240819_162918119_HDR_ac3f1c5101c74f0af466f98053328b2a.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240812_151855106_HDR_8791ece024c61e338179336386152df7.jpg",
+                            "modification_date": "2024-08-24",
+                            "full_path": "IMG_20240812_151855106_HDR_8791ece024c61e338179336386152df7.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240813_172919036_HDR_3a0762f13b13d67bafe7b5bff59205f1.jpg",
+                            "modification_date": "2024-08-24",
+                            "full_path": "IMG_20240813_172919036_HDR_3a0762f13b13d67bafe7b5bff59205f1.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240813_172700283_HDR_031e5b5b95c6ba8a5bb7fd4cae5ee10b.jpg",
+                            "modification_date": "2024-08-24",
+                            "full_path": "IMG_20240813_172700283_HDR_031e5b5b95c6ba8a5bb7fd4cae5ee10b.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240812_103410528_HDR_8c0ffb3d08f15faa3bbc69c6555b388f.jpg",
+                            "modification_date": "2024-08-24",
+                            "full_path": "IMG_20240812_103410528_HDR_8c0ffb3d08f15faa3bbc69c6555b388f.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240814_162620674_HDR_bd4ac0425349f85cf14775a848b9832e.jpg",
+                            "modification_date": "2024-08-24",
+                            "full_path": "IMG_20240814_162620674_HDR_bd4ac0425349f85cf14775a848b9832e.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240819_162929319_HDR_38a4d4722f3d11755b53974d91bbf224.jpg",
+                            "modification_date": "2024-08-24",
+                            "full_path": "IMG_20240819_162929319_HDR_38a4d4722f3d11755b53974d91bbf224.jpg"
+                        },
+                        {
+                            "filename": "IMG_20240816_182256453_HDR_43f64a98635ba8a89e267211b40ef558.jpg",
+                            "modification_date": "2024-08-24",
+                            "full_path": "IMG_20240816_182256453_HDR_43f64a98635ba8a89e267211b40ef558.jpg"
+                        }
+                    ],
+                    "comment": "Aaaa",
+                    "children": []
+                },
+                {
+                    "name": "ｓｓｓ",
+                    "full_path": "あaaaaaaaaaaaaaaaaaああ/ｓｓｓ",
+                    "images": [],
+                    "comment": "",
+                    "children": [
+                        {
+                            "name": "ええ",
+                            "full_path": "あaaaaaaaaaaaaaaaaaああ/ｓｓｓ/ええ",
+                            "images": [
+                                {
+                                    "filename": "ダウンロード_ed8b8d534cdbaaa815817bafe9f57958.png",
+                                    "modification_date": "2025-08-16",
+                                    "full_path": "ダウンロード_ed8b8d534cdbaaa815817bafe9f57958.png"
+                                },
+                                {
+                                    "filename": "20181216-3_836e37be5a88ae2b6cea0071440ef2e9.jpg",
+                                    "modification_date": "2025-08-16",
+                                    "full_path": "20181216-3_836e37be5a88ae2b6cea0071440ef2e9.jpg"
+                                }
+                            ],
+                            "comment": "",
+                            "children": []
+                        }
+                    ]
+                },
+                {
+                    "name": "ｄｄｄ",
+                    "full_path": "あaaaaaaaaaaaaaaaaaああ/ｄｄｄ",
+                    "images": [],
+                    "comment": "",
+                    "children": [
+                        {
+                            "name": "ｆｆｆ",
+                            "full_path": "あaaaaaaaaaaaaaaaaaああ/ｄｄｄ/ｆｆｆ",
+                            "images": [
+                                {
+                                    "filename": "ダウンロード_ed8b8d534cdbaaa815817bafe9f57958.png",
+                                    "modification_date": "2025-08-16",
+                                    "full_path": "ダウンロード_ed8b8d534cdbaaa815817bafe9f57958.png"
+                                },
+                                {
+                                    "filename": "main_sp_78b49e708b755a59c0fa0a86a6a3facf.png",
+                                    "modification_date": "2025-08-18",
+                                    "full_path": "main_sp_78b49e708b755a59c0fa0a86a6a3facf.png"
+                                },
+                                {
+                                    "filename": "20181216-3_836e37be5a88ae2b6cea0071440ef2e9.jpg",
+                                    "modification_date": "2025-08-16",
+                                    "full_path": "20181216-3_836e37be5a88ae2b6cea0071440ef2e9.jpg"
+                                }
+                            ],
+                            "comment": "",
+                            "children": []
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

@@ -92,6 +92,6 @@ class LocalStorage(Storage):
 
         Returns:
             bool: True if the file exists, False otherwise.
-        """
+        """        
         full_path = self._get_full_path(file_path)
-        return full_path.exists() and full_path.is_file()
+        return full_path.exists()

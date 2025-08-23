@@ -51,7 +51,14 @@ class DataManager:
                 old_data_bytes = self.storage.load(gallery_data_path)
                 old_data = json.loads(old_data_bytes.decode('utf-8'))
                 
-                timestamp = datetime.now(timezone.utc).strftime('%Y%m%d%H%M%S')
+                storage_type = self.config_manager.get('storage_type')
+                if storage_type == 'local':
+                    # Use JST for local storage
+                    jst = pytz.timezone('Asia/Tokyo')
+                    timestamp = datetime.now(jst).strftime('%Y%m%d%H%M%S')
+                else:
+                    # Use UTC for other storage types (e.g., Databricks)
+                    timestamp = datetime.now(timezone.utc).strftime('%Y%m%d%H%M%S')
                 backup_filename = f"gallery_data_{timestamp}.json"
                 backup_filepath = os.path.join(backup_dir, backup_filename)
                 

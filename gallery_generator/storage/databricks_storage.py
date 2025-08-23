@@ -112,7 +112,7 @@ class DatabricksStorage(Storage):
         
         # We only want files, not directories, and only their names.
         files_in_dir = []
-        for item in response.json().get('files', []):
+        for item in response.json().get('contents', []):
             if not item.get('is_directory', False): # Only include files
                 # Extract filename from the full path
                 filename = os.path.basename(item['path'])

@@ -1,6 +1,6 @@
 {
-    "storage_type": "databricks",
+    "storage_type": "local",
     "MAX_CONTENT_LENGTH": 157286400,
     "REPORT_BASE_URL": "https://test-3672094577050007.aws.databricksapps.com",
-    "MAX_UPLOAD_WORKERS": 100
+        "MAX_UPLOAD_WORKERS": 20
 }

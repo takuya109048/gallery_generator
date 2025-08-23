@@ -92,9 +92,8 @@ document.addEventListener('DOMContentLoaded', () => {
             progressBarToast.classList.add('toast-message', 'toast-info', 'progress-toast');
             document.body.appendChild(progressBarToast);
 
-            // Create inner progress bar element
             progressBarInner = document.createElement('div');
-            progressBarInner.classList.add('progress-bar-inner'); // Add a class for styling
+            progressBarInner.classList.add('progress-bar-inner');
             progressBarToast.appendChild(progressBarInner);
 
             const textSpan = document.createElement('span');
@@ -102,14 +101,20 @@ document.addEventListener('DOMContentLoaded', () => {
             progressBarToast.appendChild(textSpan);
         }
 
-        const percentage = Math.round(progress);
-        progressBarInner.style.width = `${percentage}%`;
-        progressBarToast.querySelector('.progress-text').textContent = `Uploading: ${percentage}%`;
+        if (typeof progress === 'number') {
+            const percentage = Math.round(progress);
+            progressBarInner.style.width = `${percentage}%`;
+            progressBarToast.querySelector('.progress-text').textContent = `Uploading: ${percentage}%`;
+        } else {
+            // Handle "pending" or "initiating" state
+            progressBarInner.style.width = `0%`; // Or some indeterminate animation
+            progressBarToast.querySelector('.progress-text').textContent = 'Initiating upload...';
+        }
 
         progressBarToast.offsetHeight; // Trigger reflow
         progressBarToast.classList.add('show');
 
-        if (percentage >= 100) {
+        if (progress >= 100) {
             setTimeout(() => {
                 progressBarToast.classList.remove('show');
                 progressBarToast.addEventListener('transitionend', () => {
@@ -117,7 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         progressBarToast.parentNode.removeChild(progressBarToast);
                     }
                     progressBarToast = null;
-                    progressBarInner = null; // Reset inner bar as well
+                    progressBarInner = null;
                 }, { once: true });
             }, 500);
         }
@@ -134,23 +139,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 const progress = data.progress;
 
                 if (progress === null || typeof progress === 'undefined') {
-                    // No upload in progress or no previous upload status found, do nothing
+                    // No upload in progress, do nothing
                     return;
                 }
 
                 if (progress >= 0 && progress < 100) {
                     showProgressBarToast(progress);
                 } else if (progress === 100) {
-                    // If upload is complete, ensure progress bar is hidden
                     if (progressBarToast) {
                         progressBarToast.classList.remove('show');
                         progressBarToast.parentNode.removeChild(progressBarToast);
                         progressBarToast = null;
                         progressBarInner = null;
                     }
-                }
-            } else if (progress === -1) {
-                    // Handle error state
+                } else if (progress === -1) {
                     showMessage('Previous upload failed. Please try again.', 'error');
                     if (progressBarToast) {
                         progressBarToast.classList.remove('show');
@@ -160,9 +162,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }
             }
-         catch (error) {
+         } catch (error) {
             console.error('Error checking upload status:', error);
-            // Do not show error message to user, as it might be a transient network issue
         }
     };
 
@@ -402,8 +403,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const formData = new FormData();
         formData.append('file', file);
 
-        // Show progress bar toast
-        showProgressBarToast(0);
+        // Show initial "Initiating" message
+        showProgressBarToast('initiating');
 
         let progressInterval = null;
 
@@ -412,24 +413,27 @@ document.addEventListener('DOMContentLoaded', () => {
                 const response = await fetch(`/gallery/${galleryName}/upload_status`);
                 if (response.ok) {
                     const data = await response.json();
-                    if (data.progress !== null && data.progress >= 0) {
-                        showProgressBarToast(data.progress);
-                        if (data.progress >= 100) {
-                            clearInterval(progressInterval);
+                    // When progress is reported as a number, start showing it.
+                    if (data.progress !== null && typeof data.progress === 'number') {
+                        if (data.progress >= 0) {
+                            showProgressBarToast(data.progress);
                         }
-                    } else if (data.progress === -1) { // Error case
-                        showMessage('Upload processing failed on the server.', 'error');
-                        clearInterval(progressInterval);
-                         if (progressBarToast) {
-                            progressBarToast.classList.remove('show');
-                            progressBarToast.parentNode.removeChild(progressBarToast);
-                            progressBarToast = null;
+                        if (data.progress >= 100 || data.progress === -1) {
+                            clearInterval(progressInterval);
+                            if (data.progress === -1) {
+                                showMessage('Upload processing failed on the server.', 'error');
+                                if (progressBarToast) {
+                                    progressBarToast.classList.remove('show');
+                                    progressBarToast.parentNode.removeChild(progressBarToast);
+                                    progressBarToast = null;
+                                }
+                            }
                         }
                     }
+                    // If data.progress is null, we just keep showing the "Initiating" message
                 }
             } catch (error) {
                 console.error('Error fetching upload status:', error);
-                // Don't clear interval here, as it might be a transient network issue
             }
         };
 
@@ -450,9 +454,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     progressBarToast.parentNode.removeChild(progressBarToast);
                     progressBarToast = null;
                 }
+                clearInterval(progressInterval); // Stop polling on failure
             }
-            // On success, the 'gallery_updated' socket event will handle the final UI update.
-            // The progress interval will clear itself when it sees 100%.
 
         } catch (error) {
             console.error('Error uploading file:', error);
@@ -462,15 +465,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 progressBarToast.parentNode.removeChild(progressBarToast);
                 progressBarToast = null;
             }
+            clearInterval(progressInterval); // Stop polling on error
         } finally {
-            // Ensure the interval is cleared
+            // A failsafe to clear the interval after the upload process should have reasonably completed
             setTimeout(() => {
                  if (progressInterval) {
                     clearInterval(progressInterval);
                  }
-            }, 5000); // A failsafe to clear the interval after 5s post-completion/error
+            }, 300000); // 5 minutes failsafe
             
-            // Clear the file input value to allow re-uploading the same file
             fileElem.value = '';
         }
     };

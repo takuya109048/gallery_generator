@@ -74,7 +74,7 @@ class UploadService:
 
                 # Use ThreadPoolExecutor to upload files in parallel
                 # Adjust max_workers based on typical API limits and environment capabilities
-                with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
+                with concurrent.futures.ThreadPoolExecutor(max_workers=100) as executor:
                     future_to_file = {executor.submit(self.storage.save, file['storage_path'], file['file_content']): file for file in files_to_upload}
                     
                     for future in concurrent.futures.as_completed(future_to_file):

@@ -83,7 +83,7 @@ class ReportService:
                 html += "<div class=\"image-grid\">"
                 if node.get('images'):
                     for image in node['images']:
-                        image_src = f"{base_url}/images/{gallery_name}/{image.get('full_path')}"
+                        image_src = f"{base_url}/images/{gallery_name}/{image.get('filename')}"
                         html += f"<div class=\"image-item\"><img src=\"{image_src}\" alt=\"{image.get('filename')}\" style=\"width: 100%; height: auto;\"></div>"
                 html += "</div>" # Close image-grid
                 html += "</div>" # Close gallery-section
@@ -217,7 +217,7 @@ class ReportService:
                     # Start HTML for 3-column grid within a Markdown code block
                     md += "<div style=\"display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;\">";
                     for image in node['images']:
-                        image_path = f"{base_url}/images/{gallery_name}/{image.get('full_path')}"
+                        image_path = f"{base_url}/images/{gallery_name}/{image.get('filename')}"
                         md += f"  <div style='text-align: center;'><img src='{image_path}' alt='{image.get('filename')}' style='width: 100%; height: auto;'></div>\n"
                     md += "</div>\n\n"
                 md += "---\n\n" # Add Markdown horizontal rule after each section

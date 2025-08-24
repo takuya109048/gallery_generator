@@ -262,14 +262,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 currentSectionHtml += `<div class="image-grid">
 `;
                 filteredImages.forEach(image => {
-                    const imageUrl = `/images/${galleryName}/${image.full_path}`;
+                    const imageUrl = `/images/${galleryName}/${image.filename}`;
                     const placeholderUrl = `/static/images/placeholder.jpg`;
                     const displayName = image.filename.substring(0, image.filename.lastIndexOf('_'));
                     const imageStatusClass = image.status === 'good' ? 'good-image' : (image.status === 'bad' ? 'bad-image' : '');
 
                     currentSectionHtml += `
-                        <div class="image-item ${imageStatusClass}" data-full-path="${image.full_path}" data-status="${image.status}">
-                            <input type="checkbox" class="checkbox" ${selectedImages.has(image.full_path) ? 'checked' : ''}>
+                        <div class="image-item ${imageStatusClass}" data-filename="${image.filename}" data-status="${image.status}">
+                            <input type="checkbox" class="checkbox" ${selectedImages.has(image.filename) ? 'checked' : ''}>
                             <img src="${placeholderUrl}" data-src="${imageUrl}" alt="${image.filename}" class="lazyload">
                             <p>${displayName}</p>
                         </div>
@@ -484,34 +484,34 @@ document.addEventListener('DOMContentLoaded', () => {
             checkbox.addEventListener('click', (e) => {
                 e.stopPropagation(); // Prevent viewer.js from opening
                 const imageItem = e.target.closest('.image-item');
-                const fullPath = imageItem.dataset.fullPath;
+                const filename = imageItem.dataset.filename;
 
                 if (e.shiftKey && lastSelectedImage) {
                     const allImages = Array.from(document.querySelectorAll('.image-item'));
-                    const startIndex = allImages.findIndex(item => item.dataset.fullPath === lastSelectedImage);
-                    const endIndex = allImages.findIndex(item => item.dataset.fullPath === fullPath);
+                    const startIndex = allImages.findIndex(item => item.dataset.filename === lastSelectedImage);
+                    const endIndex = allImages.findIndex(item => item.dataset.filename === filename);
 
                     const [start, end] = [Math.min(startIndex, endIndex), Math.max(startIndex, endIndex)];
 
                     for (let i = start; i <= end; i++) {
-                        const imgPath = allImages[i].dataset.fullPath;
+                        const imgFilename = allImages[i].dataset.filename;
                         const imgCheckbox = allImages[i].querySelector('.checkbox');
                         if (e.target.checked) {
-                            selectedImages.add(imgPath);
+                            selectedImages.add(imgFilename);
                             imgCheckbox.checked = true;
                         } else {
-                            selectedImages.delete(imgPath);
+                            selectedImages.delete(imgFilename);
                             imgCheckbox.checked = false;
                         }
                     }
                 } else {
                     if (e.target.checked) {
-                        selectedImages.add(fullPath);
+                        selectedImages.add(filename);
                     } else {
-                        selectedImages.delete(fullPath);
+                        selectedImages.delete(filename);
                     }
                 }
-                lastSelectedImage = fullPath;
+                lastSelectedImage = filename;
                 
                 // Update parent heading checkbox state
                 const parentSection = imageItem.closest('.gallery-section');
@@ -539,12 +539,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 const imageCheckboxes = section.querySelectorAll('.image-item .checkbox');
 
                 imageCheckboxes.forEach(checkbox => {
-                    const fullPath = checkbox.closest('.image-item').dataset.fullPath;
+                    const filename = checkbox.closest('.image-item').dataset.filename;
                     checkbox.checked = isChecked;
                     if (isChecked) {
-                        selectedImages.add(fullPath);
+                        selectedImages.add(filename);
                     } else {
-                        selectedImages.delete(fullPath);
+                        selectedImages.delete(filename);
                     }
                 });
                 updateConfirmDeletionButtonState();
@@ -604,8 +604,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 showMessage(result.message, 'success');
 
                 // Uncheck all currently selected images and clear the selection
-                selectedImages.forEach(fullPath => {
-                    const imageItem = document.querySelector(`.image-item[data-full-path="${fullPath}"]`);
+                selectedImages.forEach(filename => {
+                    const imageItem = document.querySelector(`.image-item[data-filename="${filename}"]`);
                     if (imageItem) {
                         const checkbox = imageItem.querySelector('.checkbox');
                         if (checkbox) {

@@ -40,7 +40,7 @@ class DeleteService:
         def find_and_collect_images(node, paths_to_delete_set):
             # Collect images directly specified for deletion
             for img in node.get('images', []):
-                if img.get('full_path') in paths_to_delete_set:
+                if img.get('filename') in paths_to_delete_set:
                     images_to_delete_in_storage.add(img.get('filename'))
 
             # If a directory is marked for deletion, collect all images within it
@@ -63,7 +63,7 @@ class DeleteService:
 
         # This recursive function will remove items from the JSON structure
         def remove_from_json(node, paths_to_delete_set):
-            node['images'] = [img for img in node.get('images', []) if img.get('full_path') not in paths_to_delete_set]
+            node['images'] = [img for img in node.get('images', []) if img.get('filename') not in paths_to_delete_set]
             
             new_children = []
             for child in node.get('children', []):

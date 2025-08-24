@@ -37,8 +37,7 @@ def client(tmp_path):
                 "images": [
                     {
                         "filename": "test_image.jpg",
-                        "modification_date": "2023-01-01",
-                        "full_path": "TestFolder/test_image.jpg"
+                        "modification_date": "2023-01-01"
                     }
                 ],
                 "comment": "A test comment",

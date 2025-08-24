@@ -70,9 +70,9 @@ def _process_upload_in_background(app, file_content, original_filename, gallery_
             existing_data = app.data_manager.load_gallery_data(gallery_name)
             
             def merge_data(existing, new):
-                existing_image_paths = {img['full_path'] for img in existing.get('images', [])}
+                existing_image_filenames = {img['filename'] for img in existing.get('images', [])}
                 for new_image in new.get('images', []) :
-                    if new_image['full_path'] not in existing_image_paths:
+                    if new_image['filename'] not in existing_image_filenames:
                         existing.get('images', []).append(new_image)
 
                 existing_children_map = {child['name']: child for child in existing.get('children', [])}

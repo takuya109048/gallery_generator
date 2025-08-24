@@ -82,7 +82,6 @@ class DatabricksStorage(Storage):
         print(f"DEBUG: list_files API URL: {api_url}")
         response = requests.get(api_url, headers=self.headers)
         print(f"DEBUG: list_files response status code: {response.status_code}")
-        print(f"DEBUG: list_files response text: {response.text}")
         
         if response.status_code == 404:
             print(f"DEBUG: Directory {directory_path} not found.")

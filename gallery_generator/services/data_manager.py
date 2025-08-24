@@ -41,29 +41,34 @@ class DataManager:
             print(f"Error loading gallery data from {gallery_data_path}: {e}")
             return {}
 
-    def save_gallery_data(self, data: Dict[str, Any], gallery_name: str):
+    def save_gallery_data(self, data: Dict[str, Any], gallery_name: str) -> bool:
         gallery_data_path = self._get_gallery_data_path(gallery_name)
         backup_dir = self._get_backup_dir_for_gallery(gallery_name)
 
-        # Backup current gallery_data.json before saving new data
-        if self.storage.exists(gallery_data_path):
-            try:
-                old_data_bytes = self.storage.load(gallery_data_path)
-                old_data = json.loads(old_data_bytes.decode('utf-8'))
-                
-                # Always use JST for backup timestamp in filename
-                jst = pytz.timezone('Asia/Tokyo')
-                timestamp = datetime.now(jst).strftime('%Y%m%d%H%M%S')
-                backup_filename = f"gallery_data_{timestamp}.json"
-                backup_filepath = os.path.join(backup_dir, backup_filename)
-                
-                self.storage.save(backup_filepath, json.dumps(old_data, ensure_ascii=False, indent=4).encode('utf-8'))
-            except FileNotFoundError:
-                pass # No existing file to backup
-            except Exception as e:
-                print(f"Error backing up gallery data from {gallery_data_path}: {e}")
+        try:
+            # Backup current gallery_data.json before saving new data
+            if self.storage.exists(gallery_data_path):
+                try:
+                    old_data_bytes = self.storage.load(gallery_data_path)
+                    old_data = json.loads(old_data_bytes.decode('utf-8'))
+                    
+                    # Always use JST for backup timestamp in filename
+                    jst = pytz.timezone('Asia/Tokyo')
+                    timestamp = datetime.now(jst).strftime('%Y%m%d%H%M%S')
+                    backup_filename = f"gallery_data_{timestamp}.json"
+                    backup_filepath = os.path.join(backup_dir, backup_filename)
+                    
+                    self.storage.save(backup_filepath, json.dumps(old_data, ensure_ascii=False, indent=4).encode('utf-8'))
+                except FileNotFoundError:
+                    pass # No existing file to backup
+                except Exception as e:
+                    print(f"Error backing up gallery data from {gallery_data_path}: {e}")
 
-        self.storage.save(gallery_data_path, json.dumps(data, ensure_ascii=False, indent=4).encode('utf-8'))
+            self.storage.save(gallery_data_path, json.dumps(data, ensure_ascii=False, indent=4).encode('utf-8'))
+            return True
+        except Exception as e:
+            print(f"Error saving gallery data to {gallery_data_path}: {e}")
+            return False
 
     def get_backup_versions(self, gallery_name: str) -> list[Dict[str, Any]]:
         backup_files = []
@@ -152,6 +157,18 @@ class DataManager:
             return True
         return False
 
+    def _find_image_and_update_status(self, node, image_filename, status):
+        if 'images' in node:
+            for image in node['images']:
+                if image['filename'] == image_filename:
+                    image['status'] = status
+                    return True
+        if 'children' in node:
+            for child in node['children']:
+                if self._find_image_and_update_status(child, image_filename, status):
+                    return True
+        return False
+
     def update_image_status(self, image_paths: list[str], status: str, gallery_name: str) -> bool:
         gallery_data = self.load_gallery_data(gallery_name)
         if not gallery_data:
@@ -159,19 +176,10 @@ class DataManager:
 
         updated = False
         for full_image_path in image_paths:
-            parts = full_image_path.strip('/').split('/')
-            image_filename = parts[-1]
-            dir_path_parts = parts[:-1]
-
-            node = self._find_node_by_path(gallery_data, dir_path_parts)
-            if node and 'images' in node:
-                for image in node['images']:
-                    if image['filename'] == image_filename:
-                        image['status'] = status
-                        updated = True
-                        break
+            image_filename = full_image_path.split('/')[-1]
+            if self._find_image_and_update_status(gallery_data, image_filename, status):
+                updated = True
         
         if updated:
-            self.save_gallery_data(gallery_data, gallery_name)
-            return True
+            return self.save_gallery_data(gallery_data, gallery_name)
         return False

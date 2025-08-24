@@ -106,10 +106,12 @@ class UploadService:
 
                 for file_data in successful_uploads:
                     node = self._get_or_create_node(gallery_data, file_data['zip_internal_path'])
+                    image_full_path = file_data['hashed_filename']
                     node['images'].append({
                         "filename": file_data['hashed_filename'],
                         "modification_date": file_data['mod_date'],
-                        "full_path": file_data['hashed_filename']
+                        "full_path": image_full_path,
+                        "status": "neutral"
                     })
 
         except zipfile.BadZipFile:

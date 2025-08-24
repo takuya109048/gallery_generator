@@ -52,14 +52,7 @@ class DeleteService:
 
         find_and_collect_images(current_gallery_data, paths_set)
         
-        # Delete image files from storage
-        for img_filename in images_to_delete_in_storage:
-            try:
-                storage_path = f"{gallery_name}/{img_filename}"
-                self.storage.delete(storage_path)
-                logger.info(f"Deleted from storage: {storage_path}")
-            except Exception as e:
-                logger.error(f"Error deleting {storage_path} from storage: {e}")
+        
 
         # This recursive function will remove items from the JSON structure
         def remove_from_json(node, paths_to_delete_set):
